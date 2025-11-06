@@ -1,0 +1,8 @@
+node_modules/
+database-storage/
+dokdo/
+package-lock.json
+dist/
+*.log
+.env
+.DS_Store
