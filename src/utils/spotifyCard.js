@@ -2,6 +2,26 @@ import { createCanvas, loadImage, registerFont } from 'canvas';
 import { AttachmentBuilder } from 'discord.js';
 
 /**
+ * Polyfill for roundRect if not available
+ */
+function addRoundRectSupport(ctx) {
+    if (!ctx.roundRect) {
+        ctx.roundRect = function(x, y, width, height, radius) {
+            if (width < 2 * radius) radius = width / 2;
+            if (height < 2 * radius) radius = height / 2;
+            this.beginPath();
+            this.moveTo(x + radius, y);
+            this.arcTo(x + width, y, x + width, y + height, radius);
+            this.arcTo(x + width, y + height, x, y + height, radius);
+            this.arcTo(x, y + height, x, y, radius);
+            this.arcTo(x, y, x + width, y, radius);
+            this.closePath();
+            return this;
+        };
+    }
+}
+
+/**
  * Generates a beautiful Spotify-style card for now playing tracks
  * @param {Object} track - The track object from the player
  * @param {Object} requester - The user who requested the track
@@ -10,6 +30,9 @@ import { AttachmentBuilder } from 'discord.js';
 export async function generateSpotifyCard(track, requester) {
     const canvas = createCanvas(800, 350);
     const ctx = canvas.getContext('2d');
+
+    // Add roundRect support if needed
+    addRoundRectSupport(ctx);
 
     // Background gradient (Spotify green to dark)
     const gradient = ctx.createLinearGradient(0, 0, 800, 350);

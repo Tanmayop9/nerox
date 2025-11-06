@@ -12,12 +12,12 @@ export default class Stats extends Command {
         this.aliases = ['status', 'botinfo'];
         this.description = 'Displays bot statistics with navigation.';
         this.execute = async (client, ctx) => {
-            const pages = await this.getStatsPages(client);
+            const pages = await this.getStatsPages(client, ctx);
             await paginator(ctx, pages);
         };
     }
 
-    async getStatsPages(client) {
+    async getStatsPages(client, ctx) {
         const totalUsers = client.guilds.cache.reduce((total, guild) => total + guild.memberCount, 0);
         const cpuUsage = (await import('os-utils')).default.cpuUsage;
         const _cpuUsage = await new Promise((resolve) => cpuUsage(resolve));
