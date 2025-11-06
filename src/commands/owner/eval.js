@@ -43,7 +43,7 @@ export default class Eval extends Command {
 
                 const output = evaled.length > 1900 ? evaled.substring(0, 1900) + '...' : evaled;
 
-                const embed = client.embed('#1DB954')
+                const embed = client.embed('#FF69B4')
                     .setAuthor({
                         name: `${client.user.username} - Eval`,
                         iconURL: client.user.displayAvatarURL()
@@ -60,7 +60,7 @@ export default class Eval extends Command {
             } catch (error) {
                 const executionTime = Date.now() - startTime;
                 
-                const embed = client.embed('#FF0000')
+                const embed = client.embed('#FF69B4')
                     .setAuthor({
                         name: `${client.user.username} - Eval Error`,
                         iconURL: client.user.displayAvatarURL()

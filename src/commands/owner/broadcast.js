@@ -22,7 +22,7 @@ export default class Broadcast extends Command {
             const message = args.join(' ');
             const guilds = client.guilds.cache;
             
-            const confirmEmbed = client.embed('#1DB954')
+            const confirmEmbed = client.embed('#FF69B4')
                 .setAuthor({
                     name: `${client.user.username} - Broadcast Confirmation`,
                     iconURL: client.user.displayAvatarURL()
@@ -47,7 +47,7 @@ export default class Broadcast extends Command {
                 return;
             }
 
-            const broadcastEmbed = client.embed('#1DB954')
+            const broadcastEmbed = client.embed('#FF69B4')
                 .setAuthor({
                     name: `${client.user.username} - Announcement`,
                     iconURL: client.user.displayAvatarURL()
@@ -87,7 +87,7 @@ export default class Broadcast extends Command {
 
             await statusMsg.edit({
                 embeds: [
-                    client.embed('#1DB954')
+                    client.embed('#FF69B4')
                         .setDescription(
                             `**Broadcast Complete**\n\n` +
                             `${client.emoji.check} Successful: \`${success}\`\n` +

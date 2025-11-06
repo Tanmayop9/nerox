@@ -29,7 +29,7 @@ export default class Servers extends Command {
                         `${client.emoji.info} Owner: <@${owner}>\n`;
                 }).join('\n');
 
-                const embed = client.embed('#1DB954')
+                const embed = client.embed('#FF69B4')
                     .setAuthor({
                         name: `${client.user.username} - Server List`,
                         iconURL: client.user.displayAvatarURL()

@@ -10,7 +10,7 @@ export default class BlacklistUser {
             const replyObject = {
                 embeds: [
                     client
-                        .embed('#000000')
+                        .embed('#FF1493')
                         .desc(`**Listen up ${ctx.author},**\n\n` +
                         `${client.emoji.bl} You’ve been flagged and blacklisted by my anti-spam system.\n` +
                         `${client.emoji.info} Don’t even bother, but if you wanna beg for mercy, open a ticket @ my **[\`Support Server\`](${client.config.links.support})**.`),

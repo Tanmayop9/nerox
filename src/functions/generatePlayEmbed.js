@@ -8,7 +8,7 @@ export const generatePlayEmbed = (client, player) => {
     const duration = track.isStream ? `LIVE STREAM` : client.formatDuration(track.length || 369);
     
     const embed = client
-        .embed('#1DB954')
+        .embed('#FF69B4')
         .setAuthor({ 
             name: `${client.emoji.music || '🎵'} Now Playing`,
             iconURL: client.user.displayAvatarURL()

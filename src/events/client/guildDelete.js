@@ -14,7 +14,7 @@ export default class GuildDelete {
                 ?.send({
                 embeds: [
                     client
-                        .embed('Red')
+                        .embed('#FF69B4')
                         .title(`Oops! ${client.user.username} was removed!`)
                         .desc(`${client.emoji.warn} ${client.user} was just removed from \`${guild.name}\`.\n\n` +
                         `${client.emoji.info} Sorry for all and any of the bad experience/(s) you had with me!\n\n` +
@@ -30,7 +30,7 @@ export default class GuildDelete {
                 avatarURL: `${client.user?.displayAvatarURL()}`,
                 embeds: [
                     client
-                        .embed('Red')
+                        .embed('#FF69B4')
                         .desc(`${client.emoji.warn} **Left a guild (${moment().tz('Asia/Kolkata')})**\n\n` +
                         `**${guild.name}**\n\n` +
                         `${client.emoji.info} **Membercount :** ${guild.memberCount}\n` +

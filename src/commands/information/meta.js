@@ -15,7 +15,7 @@ export default class CodeStats extends Command {
 		this.description = 'View full details about the bot\'s codebase.';
 		this.execute = async (client, ctx) => {
 			const msg = await ctx.reply({
-				embeds: [client.embed('#1DB954')
+				embeds: [client.embed('#FF69B4')
 					.setTitle('Collecting Statistics...')
 					.desc(`${client.emoji.info} Analyzing codebase structure\n${client.emoji.info} Scanning files and directories\n${client.emoji.info} Counting lines of code`)
 				],
@@ -38,7 +38,7 @@ export default class CodeStats extends Command {
 			];
 
 			const embeds = [
-				client.embed('#1DB954')
+				client.embed('#FF69B4')
 					.setAuthor({ 
 						name: `${client.user.username} - Codebase Statistics`,
 						iconURL: client.user.displayAvatarURL()
@@ -56,7 +56,7 @@ export default class CodeStats extends Command {
 			let pageNum = 2;
 			for (const chunk of treeChunks) {
 				embeds.push(
-					client.embed('#1DB954')
+					client.embed('#FF69B4')
 						.setAuthor({ 
 							name: `${client.user.username} - Directory Tree`,
 							iconURL: client.user.displayAvatarURL()

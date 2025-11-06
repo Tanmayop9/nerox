@@ -35,11 +35,11 @@ export async function generateSpotifyCard(track, requester, client = null) {
     // Add roundRect support if needed
     addRoundRectSupport(ctx);
 
-    // Background gradient (Spotify green to dark)
+    // Background gradient (Pink theme - cute and minimalist)
     const gradient = ctx.createLinearGradient(0, 0, 800, 350);
-    gradient.addColorStop(0, '#1DB954');
-    gradient.addColorStop(0.5, '#1ed760');
-    gradient.addColorStop(1, '#191414');
+    gradient.addColorStop(0, '#FF69B4');
+    gradient.addColorStop(0.5, '#FFB6C1');
+    gradient.addColorStop(1, '#FF1493');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 800, 350);
 
@@ -84,7 +84,7 @@ export async function generateSpotifyCard(track, requester, client = null) {
         ctx.fillRect(30, 50, 250, 250);
         
         // Draw music icon placeholder
-        ctx.fillStyle = '#1DB954';
+        ctx.fillStyle = '#FF69B4';
         ctx.font = 'bold 60px Arial';
         ctx.textAlign = 'center';
         ctx.fillText('MUSIC', 155, 185);
@@ -95,7 +95,7 @@ export async function generateSpotifyCard(track, requester, client = null) {
     ctx.shadowColor = 'transparent';
 
     // Now Playing text
-    ctx.fillStyle = '#1DB954';
+    ctx.fillStyle = '#FF69B4';
     ctx.font = 'bold 24px Arial';
     ctx.fillText('NOW PLAYING', 310, 80);
 
@@ -127,7 +127,7 @@ export async function generateSpotifyCard(track, requester, client = null) {
     ctx.fill();
 
     // Duration bar foreground (showing as starting)
-    ctx.fillStyle = '#1DB954';
+    ctx.fillStyle = '#FF69B4';
     ctx.beginPath();
     ctx.roundRect(barX, barY, 30, barHeight, 3);
     ctx.fill();
@@ -148,17 +148,17 @@ export async function generateSpotifyCard(track, requester, client = null) {
     ctx.font = '20px Arial';
     ctx.fillText('Requested by:', 310, 260);
     
-    ctx.fillStyle = '#1DB954';
+    ctx.fillStyle = '#FF69B4';
     ctx.font = 'bold 22px Arial';
     const requesterName = requester?.displayName?.length > 25 
         ? requester.displayName.substring(0, 25) + '...' 
         : requester?.displayName || 'Unknown User';
     ctx.fillText(requesterName, 310, 290);
 
-    // Spotify-style play icon
+    // Pink play icon
     const iconX = 710;
     const iconY = 260;
-    ctx.fillStyle = '#1DB954';
+    ctx.fillStyle = '#FF69B4';
     ctx.beginPath();
     ctx.arc(iconX, iconY, 30, 0, Math.PI * 2);
     ctx.fill();

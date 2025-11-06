@@ -28,7 +28,7 @@ export default class Help extends Command {
 
 		const totalCommands = client.commands.filter(cmd => !['owner', 'mod', 'debug'].includes(cmd.category)).size;
 
-		const embed = client.embed('#1DB954')
+		const embed = client.embed('#FF69B4')
 			.setAuthor({ 
 				name: `${client.user.username} Command Center`,
 				iconURL: client.user.displayAvatarURL()
@@ -101,7 +101,7 @@ export default class Help extends Command {
 					break;
 
 				case 'all':
-					const allEmbed = client.embed('#1DB954')
+					const allEmbed = client.embed('#FF69B4')
 						.setAuthor({ 
 							name: `${client.user.username} - All Commands`,
 							iconURL: client.user.displayAvatarURL()
@@ -124,7 +124,7 @@ export default class Help extends Command {
 
 				default:
 					const selectedCommands = allCommands[selected] || [];
-					const categoryEmbed = client.embed('#1DB954')
+					const categoryEmbed = client.embed('#FF69B4')
 						.setAuthor({ 
 							name: `${client.user.username} - ${selected.charAt(0).toUpperCase() + selected.slice(1)} Commands`,
 							iconURL: client.user.displayAvatarURL()

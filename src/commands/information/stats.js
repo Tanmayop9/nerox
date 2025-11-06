@@ -22,7 +22,7 @@ export default class Stats extends Command {
         const cpuUsage = (await import('os-utils')).default.cpuUsage;
         const _cpuUsage = await new Promise((resolve) => cpuUsage(resolve));
 
-        const generalStatsEmbed = client.embed('#1DB954')
+        const generalStatsEmbed = client.embed('#FF69B4')
             .setAuthor({
                 name: `${client.user.username} Statistics`,
                 iconURL: client.user.displayAvatarURL(),
@@ -61,7 +61,7 @@ export default class Stats extends Command {
             })
         );
 
-        const shardInfoEmbed = client.embed('#1DB954')
+        const shardInfoEmbed = client.embed('#FF69B4')
             .setAuthor({
                 name: `${client.user.username} Shard Information`,
                 iconURL: client.user.displayAvatarURL(),
@@ -85,7 +85,7 @@ export default class Stats extends Command {
             })
             .setTimestamp();
 
-        const systemInfoEmbed = client.embed('#1DB954')
+        const systemInfoEmbed = client.embed('#FF69B4')
             .setAuthor({
                 name: `${client.user.username} System Information`,
                 iconURL: client.user.displayAvatarURL(),
