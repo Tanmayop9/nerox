@@ -21,7 +21,7 @@ export default class BlacklistUser {
             };
             await ctx.react(client.emoji.bl, {
                 content: 'You’ve been flagged and blacklisted by my anti-spam system!!!\n' +
-                    'Check your DMs, loser. 🙄',
+                    'Check your DMs.',
             });
             await ctx.author.send(replyObject).catch(() => null);
             await client.webhooks.blLogs.send({
