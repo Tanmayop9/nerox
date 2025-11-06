@@ -10,7 +10,7 @@ export default class BlacklistUser {
             const replyObject = {
                 embeds: [
                     client
-                        .embed('#000000')
+                        .embed('#FF1493')
                         .desc(`**Listen up ${ctx.author},**\n\n` +
                         `${client.emoji.bl} You’ve been flagged and blacklisted by my anti-spam system.\n` +
                         `${client.emoji.info} Don’t even bother, but if you wanna beg for mercy, open a ticket @ my **[\`Support Server\`](${client.config.links.support})**.`),
@@ -21,7 +21,7 @@ export default class BlacklistUser {
             };
             await ctx.react(client.emoji.bl, {
                 content: 'You’ve been flagged and blacklisted by my anti-spam system!!!\n' +
-                    'Check your DMs, loser. 🙄',
+                    'Check your DMs.',
             });
             await ctx.author.send(replyObject).catch(() => null);
             await client.webhooks.blLogs.send({

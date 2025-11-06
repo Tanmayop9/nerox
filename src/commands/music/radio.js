@@ -15,7 +15,6 @@ export default class Radio extends Command {
         super(...arguments);
         this.inSameVC = true;
         this.aliases = ['rad'];
-        this.staff = true;
         this.description = 'Listen to radio';
         this.execute = async (client, ctx) => {
             const player = client.getPlayer(ctx) ||

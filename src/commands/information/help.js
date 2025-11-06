@@ -28,27 +28,24 @@ export default class Help extends Command {
 
 		const totalCommands = client.commands.filter(cmd => !['owner', 'mod', 'debug'].includes(cmd.category)).size;
 
-		const embed = client.embed('#1DB954')
+		const embed = client.embed('#FF69B4')
 			.setAuthor({ 
 				name: `${client.user.username} Command Center`,
 				iconURL: client.user.displayAvatarURL()
 			})
 			.setThumbnail(client.user.displayAvatarURL())
 			.desc(
-				`╭─────────────────────────────────╮\n` +
-				`│  🎵 **Music Bot by NeroX Studios**  │\n` +
-				`╰─────────────────────────────────╯\n\n` +
-				`**📍 Quick Info**\n` +
-				`> ${client.emoji.info} **Prefix:** \`${client.prefix}\`\n` +
-				`> ${client.emoji.info} **Total Commands:** \`${totalCommands}\`\n` +
-				`> ${client.emoji.info} **Categories:** \`${categories.length}\`\n\n` +
-				`**📖 How to Use**\n` +
-				`> Use \`${client.prefix}<command> -guide\` for command details\n\n` +
-				`**🔰 Argument Guide**\n` +
-				`> \`<>\` = Required\n` +
-				`> \`[]\` = Optional\n\n` +
-				`**🎯 Navigation**\n` +
-				`> Select a category from the dropdown below to view commands!`
+				`**Music Bot by NeroX Studios**\n\n` +
+				`**Quick Info**\n` +
+				`${client.emoji.info} Prefix: \`${client.prefix}\`\n` +
+				`${client.emoji.info} Total Commands: \`${totalCommands}\`\n` +
+				`${client.emoji.info} Categories: \`${categories.length}\`\n\n` +
+				`**How to Use**\n` +
+				`Use \`${client.prefix}<command> -guide\` for command details\n\n` +
+				`**Argument Guide**\n` +
+				`\`<>\` = Required | \`[]\` = Optional\n\n` +
+				`**Navigation**\n` +
+				`Select a category from the dropdown below!`
 			)
 			.footer({ 
 				text: `Powered by NeroX Studios • ${client.guilds.cache.size} Servers`,
@@ -57,34 +54,30 @@ export default class Help extends Command {
 			.setTimestamp();
 
 		const categoryEmojis = {
-			music: '🎵',
-			information: 'ℹ️',
-			premium: '⭐',
-			ticket: '🎫'
+			music: client.emoji.music || 'MUSIC',
+			information: client.emoji.info1 || 'INFO',
+			premium: client.emoji.premium || 'PREMIUM',
 		};
 
 		const menu = new StringSelectMenuBuilder()
 			.setCustomId('menu')
-			.setPlaceholder('🎯 Select a category to explore commands')
+			.setPlaceholder('Select a category to explore commands')
 			.setMaxValues(1)
 			.addOptions([
 				{
-					label: '🏠 Home',
+					label: 'Home',
 					value: 'home',
 					description: 'Return to main menu',
-					emoji: '🏠',
 				},
 				...categories.map(category => ({
 					label: `${category.charAt(0).toUpperCase() + category.slice(1)} Commands`,
 					value: category,
 					description: `View ${allCommands[category]?.length || 0} ${category} commands`,
-					emoji: categoryEmojis[category] || '📂',
 				})),
 				{
-					label: '📜 All Commands',
+					label: 'All Commands',
 					value: 'all',
 					description: 'View all available commands',
-					emoji: '📜',
 				},
 			]);
 
@@ -108,7 +101,7 @@ export default class Help extends Command {
 					break;
 
 				case 'all':
-					const allEmbed = client.embed('#1DB954')
+					const allEmbed = client.embed('#FF69B4')
 						.setAuthor({ 
 							name: `${client.user.username} - All Commands`,
 							iconURL: client.user.displayAvatarURL()
@@ -117,7 +110,7 @@ export default class Help extends Command {
 							Object.entries(allCommands)
 								.sort((a, b) => a[0].localeCompare(b[0]))
 								.map(([cat, cmds]) =>
-									`**${categoryEmojis[cat] || '📂'} ${cat.charAt(0).toUpperCase() + cat.slice(1)}** (\`${cmds.length}\`)\n` +
+									`**${cat.charAt(0).toUpperCase() + cat.slice(1)}** (\`${cmds.length}\`)\n` +
 									`> ${cmds.map(cmd => `\`${cmd.name}\``).join(', ')}`
 								).join('\n\n')
 						)
@@ -131,7 +124,7 @@ export default class Help extends Command {
 
 				default:
 					const selectedCommands = allCommands[selected] || [];
-					const categoryEmbed = client.embed('#1DB954')
+					const categoryEmbed = client.embed('#FF69B4')
 						.setAuthor({ 
 							name: `${client.user.username} - ${selected.charAt(0).toUpperCase() + selected.slice(1)} Commands`,
 							iconURL: client.user.displayAvatarURL()
@@ -139,7 +132,7 @@ export default class Help extends Command {
 						.setThumbnail(client.user.displayAvatarURL())
 						.desc(
 							selectedCommands.length
-								? `**${categoryEmojis[selected] || '📂'} Available Commands (\`${selectedCommands.length}\`)**\n\n` +
+								? `**Available Commands (\`${selectedCommands.length}\`)**\n\n` +
 								  selectedCommands.map(cmd =>
 									`**\`${cmd.name.padEnd(12)}\`** • ${cmd.description}`
 								  ).join('\n')

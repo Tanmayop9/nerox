@@ -22,31 +22,29 @@ export default class Stats extends Command {
         const cpuUsage = (await import('os-utils')).default.cpuUsage;
         const _cpuUsage = await new Promise((resolve) => cpuUsage(resolve));
 
-        const generalStatsEmbed = client.embed('#1DB954')
+        const generalStatsEmbed = client.embed('#FF69B4')
             .setAuthor({
                 name: `${client.user.username} Statistics`,
                 iconURL: client.user.displayAvatarURL(),
             })
             .setThumbnail(client.user.displayAvatarURL())
-            .setTitle('📊 General Statistics')
+            .setTitle('General Statistics')
             .setDescription(
-                `╭─────────────────────────────╮\n` +
-                `│     **Bot Performance**     │\n` +
-                `╰─────────────────────────────╯\n\n` +
-                `**🌐 Network Stats**\n` +
-                `> ${client.emoji.info} **Servers:** \`${client.guilds.cache.size.toLocaleString()}\`\n` +
-                `> ${client.emoji.info} **Users:** \`${totalUsers.toLocaleString()}\`\n` +
-                `> ${client.emoji.info} **Channels:** \`${client.channels.cache.size.toLocaleString()}\`\n\n` +
-                `**⏱️ Runtime Info**\n` +
-                `> ${client.emoji.timer} **Uptime:** \`${client.formatDuration(client.uptime)}\`\n` +
-                `> ${client.emoji.info} **Ping:** \`${client.ws.ping}ms\`\n\n` +
-                `**💾 Memory Usage**\n` +
-                `> ${client.emoji.info} **RSS:** \`${client.formatBytes(process.memoryUsage().rss)}\`\n` +
-                `> ${client.emoji.info} **Heap Used:** \`${client.formatBytes(process.memoryUsage().heapUsed)}\`\n` +
-                `> ${client.emoji.info} **Heap Total:** \`${client.formatBytes(process.memoryUsage().heapTotal)}\`\n` +
-                `> ${client.emoji.info} **External:** \`${client.formatBytes(process.memoryUsage().external)}\`\n\n` +
-                `**🎵 Music Stats**\n` +
-                `> ${client.emoji.info} **Active Players:** \`${client.manager.players.size}\``
+                `**Bot Performance**\n\n` +
+                `**Network Stats**\n` +
+                `${client.emoji.info} Servers: \`${client.guilds.cache.size.toLocaleString()}\`\n` +
+                `${client.emoji.info} Users: \`${totalUsers.toLocaleString()}\`\n` +
+                `${client.emoji.info} Channels: \`${client.channels.cache.size.toLocaleString()}\`\n\n` +
+                `**Runtime Info**\n` +
+                `${client.emoji.timer} Uptime: \`${client.formatDuration(client.uptime)}\`\n` +
+                `${client.emoji.info} Ping: \`${client.ws.ping}ms\`\n\n` +
+                `**Memory Usage**\n` +
+                `${client.emoji.info} RSS: \`${client.formatBytes(process.memoryUsage().rss)}\`\n` +
+                `${client.emoji.info} Heap Used: \`${client.formatBytes(process.memoryUsage().heapUsed)}\`\n` +
+                `${client.emoji.info} Heap Total: \`${client.formatBytes(process.memoryUsage().heapTotal)}\`\n` +
+                `${client.emoji.info} External: \`${client.formatBytes(process.memoryUsage().external)}\`\n\n` +
+                `**Music Stats**\n` +
+                `${client.emoji.info} Active Players: \`${client.manager.players.size}\``
             )
             .footer({ 
                 text: `Page 1/3 • Requested by ${ctx.author.tag}`,
@@ -63,23 +61,21 @@ export default class Stats extends Command {
             })
         );
 
-        const shardInfoEmbed = client.embed('#1DB954')
+        const shardInfoEmbed = client.embed('#FF69B4')
             .setAuthor({
                 name: `${client.user.username} Shard Information`,
                 iconURL: client.user.displayAvatarURL(),
             })
             .setThumbnail(client.user.displayAvatarURL())
-            .setTitle('🔗 Shard Statistics')
+            .setTitle('Shard Statistics')
             .setDescription(
-                `╭─────────────────────────────╮\n` +
-                `│      **Shard Details**      │\n` +
-                `╰─────────────────────────────╯\n\n` +
+                `**Shard Details**\n\n` +
                 (shardInfo.length > 0
                     ? shardInfo.map(shard => 
                         `**Shard ${shard.id}**\n` +
-                        `> 📡 **Ping:** \`${shard.ping}ms\`\n` +
-                        `> 🏢 **Guilds:** \`${shard.guilds}\`\n` +
-                        `> 🟢 **Status:** \`${shard.status === 0 ? 'Ready' : 'Connecting'}\``
+                        `${client.emoji.info} Ping: \`${shard.ping}ms\`\n` +
+                        `${client.emoji.info} Guilds: \`${shard.guilds}\`\n` +
+                        `${client.emoji.check} Status: \`${shard.status === 0 ? 'Ready' : 'Connecting'}\``
                     ).join('\n\n')
                     : `${client.emoji.warn} No shard information available.`)
             )
@@ -89,29 +85,27 @@ export default class Stats extends Command {
             })
             .setTimestamp();
 
-        const systemInfoEmbed = client.embed('#1DB954')
+        const systemInfoEmbed = client.embed('#FF69B4')
             .setAuthor({
                 name: `${client.user.username} System Information`,
                 iconURL: client.user.displayAvatarURL(),
             })
             .setThumbnail(client.user.displayAvatarURL())
-            .setTitle('⚙️ System Statistics')
+            .setTitle('System Statistics')
             .setDescription(
-                `╭─────────────────────────────╮\n` +
-                `│    **System Resources**     │\n` +
-                `╰─────────────────────────────╯\n\n` +
-                `**🖥️ Hardware**\n` +
-                `> ${client.emoji.info} **CPU Usage:** \`${(_cpuUsage * 100).toFixed(2)}%\`\n` +
-                `> ${client.emoji.info} **RAM Usage:** \`${client.formatBytes(process.memoryUsage().rss)}\`\n` +
-                `> ${client.emoji.info} **Platform:** \`${process.platform}\`\n` +
-                `> ${client.emoji.info} **Architecture:** \`${process.arch}\`\n\n` +
-                `**📦 Software**\n` +
-                `> ${client.emoji.info} **Node.js:** \`${process.version}\`\n` +
-                `> ${client.emoji.info} **Discord.js:** \`v14.15.2\`\n` +
-                `> ${client.emoji.info} **Process ID:** \`${process.pid}\`\n\n` +
-                `**📊 Performance**\n` +
-                `> ${client.emoji.info} **Commands:** \`${client.commands.size}\`\n` +
-                `> ${client.emoji.info} **Events:** \`${client.eventNames().length}\``
+                `**System Resources**\n\n` +
+                `**Hardware**\n` +
+                `${client.emoji.info} CPU Usage: \`${(_cpuUsage * 100).toFixed(2)}%\`\n` +
+                `${client.emoji.info} RAM Usage: \`${client.formatBytes(process.memoryUsage().rss)}\`\n` +
+                `${client.emoji.info} Platform: \`${process.platform}\`\n` +
+                `${client.emoji.info} Architecture: \`${process.arch}\`\n\n` +
+                `**Software**\n` +
+                `${client.emoji.info} Node.js: \`${process.version}\`\n` +
+                `${client.emoji.info} Discord.js: \`v14.15.2\`\n` +
+                `${client.emoji.info} Process ID: \`${process.pid}\`\n\n` +
+                `**Performance**\n` +
+                `${client.emoji.info} Commands: \`${client.commands.size}\`\n` +
+                `${client.emoji.info} Events: \`${client.eventNames().length}\``
             )
             .footer({ 
                 text: `Page 3/3 • Bot Version: v1.0.0`,

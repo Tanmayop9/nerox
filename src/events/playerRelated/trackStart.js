@@ -21,7 +21,7 @@ export default class PlayerStart {
         // Generate Spotify-style card
         let spotifyCard = null;
         try {
-            spotifyCard = await generateSpotifyCard(track, track.requester);
+            spotifyCard = await generateSpotifyCard(track, track.requester, client);
         } catch (error) {
             console.error('Error generating Spotify card:', error);
         }

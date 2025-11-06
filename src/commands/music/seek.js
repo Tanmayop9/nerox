@@ -10,7 +10,6 @@ export default class Seek extends Command {
         this.playing = true;
         this.inSameVC = true;
         this.usage = '[duration]';
-        this.staff = true;
         this.description = 'seek song';
         this.options = [
             {

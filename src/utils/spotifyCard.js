@@ -25,20 +25,21 @@ function addRoundRectSupport(ctx) {
  * Generates a beautiful Spotify-style card for now playing tracks
  * @param {Object} track - The track object from the player
  * @param {Object} requester - The user who requested the track
+ * @param {Object} client - Discord client with emoji configuration
  * @returns {Promise<AttachmentBuilder>} - Discord attachment with the card image
  */
-export async function generateSpotifyCard(track, requester) {
+export async function generateSpotifyCard(track, requester, client = null) {
     const canvas = createCanvas(800, 350);
     const ctx = canvas.getContext('2d');
 
     // Add roundRect support if needed
     addRoundRectSupport(ctx);
 
-    // Background gradient (Spotify green to dark)
+    // Background gradient (Pink theme - cute and minimalist)
     const gradient = ctx.createLinearGradient(0, 0, 800, 350);
-    gradient.addColorStop(0, '#1DB954');
-    gradient.addColorStop(0.5, '#1ed760');
-    gradient.addColorStop(1, '#191414');
+    gradient.addColorStop(0, '#FF69B4');
+    gradient.addColorStop(0.5, '#FFB6C1');
+    gradient.addColorStop(1, '#FF1493');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 800, 350);
 
@@ -78,13 +79,15 @@ export async function generateSpotifyCard(track, requester) {
         ctx.shadowBlur = 0;
     } catch (error) {
         console.error('Error loading thumbnail:', error);
-        // Draw placeholder
+        // Draw placeholder with modern design
         ctx.fillStyle = '#282828';
         ctx.fillRect(30, 50, 250, 250);
-        ctx.fillStyle = '#b3b3b3';
-        ctx.font = 'bold 40px Arial';
+        
+        // Draw music icon placeholder
+        ctx.fillStyle = '#FF69B4';
+        ctx.font = 'bold 60px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('♪', 155, 190);
+        ctx.fillText('MUSIC', 155, 185);
     }
 
     // Reset text alignment
@@ -92,7 +95,7 @@ export async function generateSpotifyCard(track, requester) {
     ctx.shadowColor = 'transparent';
 
     // Now Playing text
-    ctx.fillStyle = '#1DB954';
+    ctx.fillStyle = '#FF69B4';
     ctx.font = 'bold 24px Arial';
     ctx.fillText('NOW PLAYING', 310, 80);
 
@@ -124,7 +127,7 @@ export async function generateSpotifyCard(track, requester) {
     ctx.fill();
 
     // Duration bar foreground (showing as starting)
-    ctx.fillStyle = '#1DB954';
+    ctx.fillStyle = '#FF69B4';
     ctx.beginPath();
     ctx.roundRect(barX, barY, 30, barHeight, 3);
     ctx.fill();
@@ -133,7 +136,7 @@ export async function generateSpotifyCard(track, requester) {
     ctx.fillStyle = '#b3b3b3';
     ctx.font = '18px Arial';
     const duration = track.isStream 
-        ? '🔴 LIVE' 
+        ? 'LIVE STREAM' 
         : formatDuration(track.length || 0);
     ctx.fillText('0:00', barX, barY + 30);
     ctx.textAlign = 'right';
@@ -145,17 +148,17 @@ export async function generateSpotifyCard(track, requester) {
     ctx.font = '20px Arial';
     ctx.fillText('Requested by:', 310, 260);
     
-    ctx.fillStyle = '#1DB954';
+    ctx.fillStyle = '#FF69B4';
     ctx.font = 'bold 22px Arial';
     const requesterName = requester?.displayName?.length > 25 
         ? requester.displayName.substring(0, 25) + '...' 
         : requester?.displayName || 'Unknown User';
     ctx.fillText(requesterName, 310, 290);
 
-    // Spotify-style play icon
+    // Pink play icon
     const iconX = 710;
     const iconY = 260;
-    ctx.fillStyle = '#1DB954';
+    ctx.fillStyle = '#FF69B4';
     ctx.beginPath();
     ctx.arc(iconX, iconY, 30, 0, Math.PI * 2);
     ctx.fill();

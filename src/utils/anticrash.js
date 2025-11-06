@@ -12,7 +12,7 @@ const handleCrash = (type, ...args) => {
     console.error(...args);
 };
 export const loadAntiCrash = () => {
-    log('[ Anti-Crash ] is now ◉ LiVE checking over crashes', 'success');
+    log('[ Anti-Crash ] is now LIVE checking over crashes', 'success');
     process.on('uncaughtException', (...args) => handleCrash('UncaughtException', ...args));
     process.on('unhandledRejection', (...args) => handleCrash('UnhandledRejection', ...args));
 };

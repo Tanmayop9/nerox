@@ -13,7 +13,7 @@ export default class NowPlaying extends Command {
                     client
                         .embed()
                         .desc(`${client.emoji.check} ${track.title}\n\n` +
-                        `${client.emoji.info} Duration: ${track.isStream ? `◉ LiVE` : client.formatDuration(track.length)}\n` +
+                        `${client.emoji.info} Duration: ${track.isStream ? `LIVE` : client.formatDuration(track.length)}\n` +
                         `${client.emoji.info} Author: ${track.author}`)
                         .footer({
                         text: `Track requested by ${track.requester.displayName}`,

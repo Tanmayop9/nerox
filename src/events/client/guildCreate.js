@@ -15,7 +15,7 @@ export default class GuildCreate {
             const obj = {
                 embeds: [
                     client
-                        .embed('Green')
+                        .embed('#FFB6C1')
                         .title(`Thank you for choosing ${client.user.username}!`)
                         .desc(`${client.emoji.check} ${client.user} has been successfully added to \`${guild.name}\`.\n\n` +
                         `${client.emoji.info} You can report any issues at my **[\`Support Server\`](${client.config.links.support})** or you can use \`${client.prefix}report\`. ` +
@@ -33,7 +33,7 @@ export default class GuildCreate {
                 avatarURL: `${client.user?.displayAvatarURL()}`,
                 embeds: [
                     client
-                        .embed('Green')
+                        .embed('#FFB6C1')
                         .desc(`${client.emoji.check} **Joined a guild (${moment().tz('Asia/Kolkata')})**\n\n` +
                         `**${guild.name}**\n\n` +
                         `${client.emoji.info} **Membercount :** ${guild.memberCount}\n` +

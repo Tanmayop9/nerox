@@ -11,7 +11,6 @@ export default class Similar extends Command {
         super(...arguments);
         this.playing = true;
         this.inSameVC = true;
-        this.staff = true;
         this.description = 'Get songs similar to current';
         this.execute = async (client, ctx) => {
             const player = client.getPlayer(ctx);
@@ -41,7 +40,7 @@ export default class Similar extends Command {
             const options = tracks.map((track, index) => ({
                 label: `${index} -  ${track.title.charAt(0).toUpperCase() + track.title.substring(1, 30)}`,
                 value: `${index}`,
-                description: `Author: ${track.author.substring(0, 30)}     Duration: ${track?.isStream ? '◉ LiVE' : client.formatDuration(track.length)}`,
+                description: `Author: ${track.author.substring(0, 30)}     Duration: ${track?.isStream ? 'LIVE' : client.formatDuration(track.length)}`,
                 emoji: client.emoji.info,
             }));
             const menu = new StringSelectMenuBuilder()

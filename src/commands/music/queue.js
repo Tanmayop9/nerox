@@ -10,10 +10,10 @@ export default class Queue extends Command {
         this.description = 'Get player queue';
         this.execute = async (client, ctx) => {
             const player = client.getPlayer(ctx);
-            const previous = player.queue.previous.map((t, i) => `${i} • ${t.title.substring(0, 30)} - ${t.isStream ? '◉ LIVE' : client.formatDuration(t.length)}\n`);
-            const upcoming = player.queue.map((t, i) => `${i + player.queue.previous.length + 1} • ${t.title.substring(0, 30)} - ${t.isStream ? '◉ LIVE' : client.formatDuration(t.length)}\n`);
+            const previous = player.queue.previous.map((t, i) => `${i} • ${t.title.substring(0, 30)} - ${t.isStream ? 'LIVE' : client.formatDuration(t.length)}\n`);
+            const upcoming = player.queue.map((t, i) => `${i + player.queue.previous.length + 1} • ${t.title.substring(0, 30)} - ${t.isStream ? 'LIVE' : client.formatDuration(t.length)}\n`);
             const current = `${player?.queue.previous.length} • ${player.queue.current.title.substring(0, 25)} - ${player.queue.current.isStream ?
-                '◉ LIVE'
+                'LIVE'
                 : client.formatDuration(player.queue.current.length)} ${client.emoji.check}\n`;
             const queuedSongs = [...previous, current, ...upcoming];
             const mapping = _.chunk(queuedSongs, 10);

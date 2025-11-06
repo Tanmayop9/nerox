@@ -15,32 +15,30 @@ export default class CodeStats extends Command {
 		this.description = 'View full details about the bot\'s codebase.';
 		this.execute = async (client, ctx) => {
 			const msg = await ctx.reply({
-				embeds: [client.embed('#1DB954')
-					.setTitle('📊 Collecting Statistics...')
-					.desc('> 🔍 Analyzing codebase structure\n> 📂 Scanning files and directories\n> 📝 Counting lines of code')
+				embeds: [client.embed('#FF69B4')
+					.setTitle('Collecting Statistics...')
+					.desc(`${client.emoji.info} Analyzing codebase structure\n${client.emoji.info} Scanning files and directories\n${client.emoji.info} Counting lines of code`)
 				],
 			});
 
 			const stats = await getCodeStats();
 
 			const info = [
-				`╭─────────────────────────────╮`,
-				`│   **📊 Codebase Overview**  │`,
-				`╰─────────────────────────────╯\n`,
-				`**📁 Structure**`,
-				`> 📂 **Total Files:** \`${stats.files}\``,
-				`> 📁 **Directories:** \`${stats.directories}\`\n`,
-				`**📝 Code Metrics**`,
-				`> 📄 **Total Lines:** \`${stats.lines.toLocaleString()}\``,
-				`> 🔤 **Characters:** \`${stats.characters.toLocaleString()}\``,
-				`> ⬜ **Whitespaces:** \`${stats.whitespaces.toLocaleString()}\`\n`,
-				`**📈 Statistics**`,
-				`> 📊 **Avg Lines/File:** \`${Math.floor(stats.lines / stats.files)}\``,
-				`> 📦 **Total Size:** \`${(stats.characters / 1024 / 1024).toFixed(2)} MB\``,
+				`**Codebase Overview**\n`,
+				`**Structure**`,
+				`${client.emoji.info} Total Files: \`${stats.files}\``,
+				`${client.emoji.info} Directories: \`${stats.directories}\`\n`,
+				`**Code Metrics**`,
+				`${client.emoji.info} Total Lines: \`${stats.lines.toLocaleString()}\``,
+				`${client.emoji.info} Characters: \`${stats.characters.toLocaleString()}\``,
+				`${client.emoji.info} Whitespaces: \`${stats.whitespaces.toLocaleString()}\`\n`,
+				`**Statistics**`,
+				`${client.emoji.info} Avg Lines/File: \`${Math.floor(stats.lines / stats.files)}\``,
+				`${client.emoji.info} Total Size: \`${(stats.characters / 1024 / 1024).toFixed(2)} MB\``,
 			];
 
 			const embeds = [
-				client.embed('#1DB954')
+				client.embed('#FF69B4')
 					.setAuthor({ 
 						name: `${client.user.username} - Codebase Statistics`,
 						iconURL: client.user.displayAvatarURL()
@@ -58,12 +56,12 @@ export default class CodeStats extends Command {
 			let pageNum = 2;
 			for (const chunk of treeChunks) {
 				embeds.push(
-					client.embed('#1DB954')
+					client.embed('#FF69B4')
 						.setAuthor({ 
 							name: `${client.user.username} - Directory Tree`,
 							iconURL: client.user.displayAvatarURL()
 						})
-						.setTitle('🌳 Project Structure')
+						.setTitle('Project Structure')
 						.desc(`\`\`\`bash\n${chunk.join('\n')}\n\`\`\``)
 						.footer({ 
 							text: `Page ${pageNum}/${treeChunks.length + 1} • Directory Tree`,

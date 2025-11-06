@@ -10,7 +10,6 @@ export default class Shuffle extends Command {
         this.playing = true;
         this.inSameVC = true;
         this.aliases = ['sh'];
-        this.staff = true;
         this.description = 'Shuffle the queue';
         this.execute = async (client, ctx) => {
             client.getPlayer(ctx).queue.shuffle();
