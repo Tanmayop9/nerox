@@ -1,3 +1,8 @@
+import { config as loadEnv } from 'dotenv';
+
+// Load environment variables first
+loadEnv();
+
 export const config = {
   token: process.env.DISCORD_TOKEN,
   owners: process.env.OWNER_IDS?.split(',') || ["1349404026965463072", "991517803700027443"],
