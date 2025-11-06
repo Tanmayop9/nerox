@@ -16,6 +16,10 @@ export const emoji = {
     next: '<:next:1347773081686376510>',
     stop: '<:music_stop:1347773131695194214>',
     autoplay: '<:Autoplay:1347773192617459833>',
+    // music & media
+    music: '<:music:1347773192617459833>',
+    live: '<:live:1347773192617459833>',
+    musicnote: '<:musicnote:1347773192617459833>',
     // premium
     premium: '<:premiumemoji_12:1359134089030139975>',
     prem: '<:premiumemoji_12:1359134089030139975>',

@@ -5,12 +5,12 @@ export const generatePlayEmbed = (client, player) => {
         return client.embed().desc('Lavalink could not provide track details.');
     
     const { title, author } = track;
-    const duration = track.isStream ? `🔴 LIVE STREAM` : client.formatDuration(track.length || 369);
+    const duration = track.isStream ? `LIVE STREAM` : client.formatDuration(track.length || 369);
     
     const embed = client
         .embed('#1DB954')
         .setAuthor({ 
-            name: '🎵 Now Playing',
+            name: `${client.emoji.music || '🎵'} Now Playing`,
             iconURL: client.user.displayAvatarURL()
         })
         .title(title.length > 50 ? title.substring(0, 50) + '...' : title)

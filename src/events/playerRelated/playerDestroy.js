@@ -13,7 +13,7 @@ export default class PlayerDetsroy {
                 client
                     .embed()
                     .desc(`**Enjoying the Music Experience?**\n\n` +
-      `If you're finding value in the music, why not share it with others? 🎵\n` +
+      `If you're finding value in the music, why not share it with others?\n` +
       `Consider [**referring me**](${client.invite.admin()}) to your friends and colleagues.\n` +
       `Your support helps improve the service, and together, we can continue providing great music for everyone.`)
                     .setAuthor({

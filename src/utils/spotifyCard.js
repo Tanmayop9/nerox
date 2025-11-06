@@ -25,9 +25,10 @@ function addRoundRectSupport(ctx) {
  * Generates a beautiful Spotify-style card for now playing tracks
  * @param {Object} track - The track object from the player
  * @param {Object} requester - The user who requested the track
+ * @param {Object} client - Discord client with emoji configuration
  * @returns {Promise<AttachmentBuilder>} - Discord attachment with the card image
  */
-export async function generateSpotifyCard(track, requester) {
+export async function generateSpotifyCard(track, requester, client = null) {
     const canvas = createCanvas(800, 350);
     const ctx = canvas.getContext('2d');
 
@@ -78,13 +79,15 @@ export async function generateSpotifyCard(track, requester) {
         ctx.shadowBlur = 0;
     } catch (error) {
         console.error('Error loading thumbnail:', error);
-        // Draw placeholder
+        // Draw placeholder with modern design
         ctx.fillStyle = '#282828';
         ctx.fillRect(30, 50, 250, 250);
-        ctx.fillStyle = '#b3b3b3';
-        ctx.font = 'bold 40px Arial';
+        
+        // Draw music icon placeholder
+        ctx.fillStyle = '#1DB954';
+        ctx.font = 'bold 60px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('♪', 155, 190);
+        ctx.fillText('MUSIC', 155, 185);
     }
 
     // Reset text alignment
@@ -133,7 +136,7 @@ export async function generateSpotifyCard(track, requester) {
     ctx.fillStyle = '#b3b3b3';
     ctx.font = '18px Arial';
     const duration = track.isStream 
-        ? '🔴 LIVE' 
+        ? 'LIVE STREAM' 
         : formatDuration(track.length || 0);
     ctx.fillText('0:00', barX, barY + 30);
     ctx.textAlign = 'right';

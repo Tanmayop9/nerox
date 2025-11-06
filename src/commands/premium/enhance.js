@@ -120,10 +120,10 @@ export default class Enhance extends Command {
                     client
                         .embed()
                         .desc(`${client.emoji.check} **Audio enhancement complete!** Your audio has been upgraded to a whole new level.\n\n` +
-                        `${client.emoji.info} **VC Region:** \`${rtcRegion}\` 🌍\n` +
-                        `${client.emoji.info} **Audio Signature:** \`Harman 2019\` 🎶\n` +
-                        `${client.emoji.info} **Bitrate:** \`${bitrate / 1000}kbps\` 🎧\n` +
-                        `${client.emoji.vote} Enjoy the enhanced sound quality and let your ears rejoice!`),
+                        `${client.emoji.info} **VC Region:** \`${rtcRegion}\`\n` +
+                        `${client.emoji.info} **Audio Signature:** \`Harman 2019\`\n` +
+                        `${client.emoji.info} **Bitrate:** \`${bitrate / 1000}kbps\`\n` +
+                        `${client.emoji.check} Enjoy the enhanced sound quality and let your ears rejoice!`),
                 ],
             });
         };
