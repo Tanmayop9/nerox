@@ -2,6 +2,7 @@
 import moment from 'moment';
 import { ActionRowBuilder } from 'discord.js';
 import { generatePlayEmbed } from '../../functions/generatePlayEmbed.js';
+import { generateSpotifyCard } from '../../utils/spotifyCard.js';
 
 const event = 'trackStart';
 
@@ -17,8 +18,24 @@ export default class PlayerStart {
         const channel = client.channels.cache.get(player.textId);
         if (!channel?.isTextBased() || !('send' in channel)) return;
 
+        // Generate Spotify-style card
+        let spotifyCard = null;
+        try {
+            spotifyCard = await generateSpotifyCard(track, track.requester);
+        } catch (error) {
+            console.error('Error generating Spotify card:', error);
+        }
+
+        const embed = generatePlayEmbed(client, player);
+        
+        // Add the generated card as image to embed
+        if (spotifyCard) {
+            embed.setImage('attachment://now-playing.png');
+        }
+
         const playEmbed = await channel.send({
-            embeds: [generatePlayEmbed(client, player)],
+            embeds: [embed],
+            files: spotifyCard ? [spotifyCard] : [],
             components: [
                 new ActionRowBuilder().addComponents([
                     client.button().secondary(`playEmbedButton_${player.guildId}_prev`, ``, client.emoji.previous),

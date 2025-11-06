@@ -26,41 +26,65 @@ export default class Help extends Command {
 			.sort((b, a) => b.length - a.length)
 			.filter(category => !['owner', 'mod', 'debug'].includes(category));
 
-		const embed = client.embed()
+		const totalCommands = client.commands.filter(cmd => !['owner', 'mod', 'debug'].includes(cmd.category)).size;
+
+		const embed = client.embed('#1DB954')
+			.setAuthor({ 
+				name: `${client.user.username} Command Center`,
+				iconURL: client.user.displayAvatarURL()
+			})
+			.setThumbnail(client.user.displayAvatarURL())
 			.desc(
-				`${client.emoji.info} \`${`Prefix: ${client.prefix}`.padEnd(48)}\`\n` +
-				`${client.emoji.info} \`${'Crafted by NeroX Studios'.padEnd(48)}\`\n` +
-				`${client.emoji.info1} How to Use:  
-\`+<command> -guide - Get details of any command.\`
-
-${client.emoji.info} Argument Guide:  
-\`\`<> - Required Argument
-[] - Optional Argument\`\`
-
-
-**Navigate through modules using the dropdown below.**`
+				`╭─────────────────────────────────╮\n` +
+				`│  🎵 **Music Bot by NeroX Studios**  │\n` +
+				`╰─────────────────────────────────╯\n\n` +
+				`**📍 Quick Info**\n` +
+				`> ${client.emoji.info} **Prefix:** \`${client.prefix}\`\n` +
+				`> ${client.emoji.info} **Total Commands:** \`${totalCommands}\`\n` +
+				`> ${client.emoji.info} **Categories:** \`${categories.length}\`\n\n` +
+				`**📖 How to Use**\n` +
+				`> Use \`${client.prefix}<command> -guide\` for command details\n\n` +
+				`**🔰 Argument Guide**\n` +
+				`> \`<>\` = Required\n` +
+				`> \`[]\` = Optional\n\n` +
+				`**🎯 Navigation**\n` +
+				`> Select a category from the dropdown below to view commands!`
 			)
-			.footer({ text: 'Your command hub, powered by NeroX Studios' });
+			.footer({ 
+				text: `Powered by NeroX Studios • ${client.guilds.cache.size} Servers`,
+				iconURL: ctx.author.displayAvatarURL()
+			})
+			.setTimestamp();
+
+		const categoryEmojis = {
+			music: '🎵',
+			information: 'ℹ️',
+			premium: '⭐',
+			ticket: '🎫'
+		};
 
 		const menu = new StringSelectMenuBuilder()
 			.setCustomId('menu')
-			.setPlaceholder('Select a category to unveil commands')
+			.setPlaceholder('🎯 Select a category to explore commands')
 			.setMaxValues(1)
 			.addOptions([
 				{
-					label: 'Home',
+					label: '🏠 Home',
 					value: 'home',
-					emoji: client.emoji.info,
+					description: 'Return to main menu',
+					emoji: '🏠',
 				},
 				...categories.map(category => ({
 					label: `${category.charAt(0).toUpperCase() + category.slice(1)} Commands`,
 					value: category,
-					emoji: client.emoji.info,
+					description: `View ${allCommands[category]?.length || 0} ${category} commands`,
+					emoji: categoryEmojis[category] || '📂',
 				})),
 				{
-					label: 'All Commands',
+					label: '📜 All Commands',
 					value: 'all',
-					emoji: client.emoji.info,
+					description: 'View all available commands',
+					emoji: '📜',
 				},
 			]);
 
@@ -70,7 +94,7 @@ ${client.emoji.info} Argument Guide:
 		});
 
 		const collector = reply.createMessageComponentCollector({
-			idle: 30000,
+			idle: 60000,
 			filter: i => filter(i, ctx),
 		});
 
@@ -84,28 +108,48 @@ ${client.emoji.info} Argument Guide:
 					break;
 
 				case 'all':
-					const allEmbed = client.embed().desc(
-						Object.entries(allCommands)
-							.sort((b, a) => b[0].length - a[0].length)
-							.map(([cat, cmds]) =>
-								`${client.emoji.check} **${cat.charAt(0).toUpperCase() + cat.slice(1)} Commands**\n` +
-								cmds.map(cmd => `\`${cmd.name}\``).join(', ')
-							).join('\n\n')
-					);
+					const allEmbed = client.embed('#1DB954')
+						.setAuthor({ 
+							name: `${client.user.username} - All Commands`,
+							iconURL: client.user.displayAvatarURL()
+						})
+						.desc(
+							Object.entries(allCommands)
+								.sort((a, b) => a[0].localeCompare(b[0]))
+								.map(([cat, cmds]) =>
+									`**${categoryEmojis[cat] || '📂'} ${cat.charAt(0).toUpperCase() + cat.slice(1)}** (\`${cmds.length}\`)\n` +
+									`> ${cmds.map(cmd => `\`${cmd.name}\``).join(', ')}`
+								).join('\n\n')
+						)
+						.footer({ 
+							text: `Total: ${totalCommands} commands`,
+							iconURL: ctx.author.displayAvatarURL()
+						})
+						.setTimestamp();
 					await reply.edit({ embeds: [allEmbed] });
 					break;
 
 				default:
 					const selectedCommands = allCommands[selected] || [];
-					const categoryEmbed = client.embed()
-						.title(`${client.emoji.check} ${selected.charAt(0).toUpperCase() + selected.slice(1)} Commands`)
+					const categoryEmbed = client.embed('#1DB954')
+						.setAuthor({ 
+							name: `${client.user.username} - ${selected.charAt(0).toUpperCase() + selected.slice(1)} Commands`,
+							iconURL: client.user.displayAvatarURL()
+						})
+						.setThumbnail(client.user.displayAvatarURL())
 						.desc(
 							selectedCommands.length
-								? selectedCommands.map(cmd =>
-									`${client.emoji.info} **\`${cmd.name.padEnd(11)} - \`**\`${cmd.description.padEnd(33)}\``
-								).join('\n')
-								: `${client.emoji.warn} **\`${'No commands available'.padEnd(44)}\`**`
-						);
+								? `**${categoryEmojis[selected] || '📂'} Available Commands (\`${selectedCommands.length}\`)**\n\n` +
+								  selectedCommands.map(cmd =>
+									`**\`${cmd.name.padEnd(12)}\`** • ${cmd.description}`
+								  ).join('\n')
+								: `${client.emoji.warn} No commands available in this category.`
+						)
+						.footer({ 
+							text: `Use ${client.prefix}<command> -guide for detailed help`,
+							iconURL: ctx.author.displayAvatarURL()
+						})
+						.setTimestamp();
 
 					await reply.edit({ embeds: [categoryEmbed] });
 					break;
@@ -113,7 +157,10 @@ ${client.emoji.info} Argument Guide:
 		});
 
 		collector.on('end', async () => {
-			await reply.edit({ components: [] }).catch(() => null);
+			menu.setDisabled(true);
+			await reply.edit({ 
+				components: [new ActionRowBuilder().addComponents(menu)] 
+			}).catch(() => null);
 		});
 	}
 }

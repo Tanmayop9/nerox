@@ -15,32 +15,63 @@ export default class CodeStats extends Command {
 		this.description = 'View full details about the bot\'s codebase.';
 		this.execute = async (client, ctx) => {
 			const msg = await ctx.reply({
-				content: `collecting code statistics, please wait...`,
+				embeds: [client.embed('#1DB954')
+					.setTitle('📊 Collecting Statistics...')
+					.desc('> 🔍 Analyzing codebase structure\n> 📂 Scanning files and directories\n> 📝 Counting lines of code')
+				],
 			});
 
 			const stats = await getCodeStats();
 
 			const info = [
-				`• **Total Files:** \`${stats.files}\``,
-				`• **Total Directories:** \`${stats.directories}\``,
-				`• **Total Lines:** \`${stats.lines}\``,
-				`• **Characters:** \`${stats.characters.toLocaleString()}\``,
-				`• **Whitespaces:** \`${stats.whitespaces}\``,
+				`╭─────────────────────────────╮`,
+				`│   **📊 Codebase Overview**  │`,
+				`╰─────────────────────────────╯\n`,
+				`**📁 Structure**`,
+				`> 📂 **Total Files:** \`${stats.files}\``,
+				`> 📁 **Directories:** \`${stats.directories}\`\n`,
+				`**📝 Code Metrics**`,
+				`> 📄 **Total Lines:** \`${stats.lines.toLocaleString()}\``,
+				`> 🔤 **Characters:** \`${stats.characters.toLocaleString()}\``,
+				`> ⬜ **Whitespaces:** \`${stats.whitespaces.toLocaleString()}\`\n`,
+				`**📈 Statistics**`,
+				`> 📊 **Avg Lines/File:** \`${Math.floor(stats.lines / stats.files)}\``,
+				`> 📦 **Total Size:** \`${(stats.characters / 1024 / 1024).toFixed(2)} MB\``,
 			];
 
 			const embeds = [
-				client.embed()
-					.setTitle(`Codebase Statistics`)
-					.desc(info.join('\n')),
+				client.embed('#1DB954')
+					.setAuthor({ 
+						name: `${client.user.username} - Codebase Statistics`,
+						iconURL: client.user.displayAvatarURL()
+					})
+					.setThumbnail(client.user.displayAvatarURL())
+					.desc(info.join('\n'))
+					.footer({ 
+						text: `Page 1/${Math.ceil(stats.tree.length / 20) + 1} • Developed by NeroX Studios`,
+						iconURL: ctx.author.displayAvatarURL()
+					})
+					.setTimestamp()
 			];
 
 			const treeChunks = _.chunk(stats.tree, 20);
+			let pageNum = 2;
 			for (const chunk of treeChunks) {
 				embeds.push(
-					client.embed()
-						.setTitle(` Code Tree`)
+					client.embed('#1DB954')
+						.setAuthor({ 
+							name: `${client.user.username} - Directory Tree`,
+							iconURL: client.user.displayAvatarURL()
+						})
+						.setTitle('🌳 Project Structure')
 						.desc(`\`\`\`bash\n${chunk.join('\n')}\n\`\`\``)
+						.footer({ 
+							text: `Page ${pageNum}/${treeChunks.length + 1} • Directory Tree`,
+							iconURL: ctx.author.displayAvatarURL()
+						})
+						.setTimestamp()
 				);
+				pageNum++;
 			}
 
 			await paginator(ctx, embeds);
