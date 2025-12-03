@@ -18,19 +18,18 @@ export default {
                 embeds: [
                     client.embed(client.colors.info)
                         .setAuthor({
-                            name: '⚡ No Prefix Management',
+                            name: 'No Prefix Management',
                             iconURL: client.user.displayAvatarURL()
                         })
                         .setDescription(
-                            `Manage no-prefix access for users! 💖\n\n` +
+                            `Manage no-prefix access for users.\n\n` +
                             `**Commands:**\n` +
                             `\`${client.prefix}noprefix add <user>\` - Grant no-prefix\n` +
                             `\`${client.prefix}noprefix remove <user>\` - Remove no-prefix\n` +
                             `\`${client.prefix}noprefix check <user>\` - Check status\n` +
-                            `\`${client.prefix}noprefix list\` - View all users\n\n` +
-                            `*No-prefix lets users use commands without typing the prefix!* ✨`
+                            `\`${client.prefix}noprefix list\` - View all users`
                         )
-                        .setFooter({ text: '💖 NeroX Support Manager' })
+                        .setFooter({ text: 'NeroX Support Manager' })
                 ]
             });
         }
@@ -60,7 +59,7 @@ async function addNoPrefix(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Please mention a user or provide a valid ID! 🔍`)
+                    .setDescription('Please mention a user or provide a valid ID.')
             ]
         });
     }
@@ -70,7 +69,7 @@ async function addNoPrefix(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.warning)
-                    .setDescription(`${client.emoji.warn} **${target.tag}** already has no-prefix! ⚡`)
+                    .setDescription(`**${target.tag}** already has no-prefix.`)
             ]
         });
     }
@@ -79,18 +78,16 @@ async function addNoPrefix(client, message, args) {
 
     const embed = client.embed(client.colors.success)
         .setAuthor({
-            name: '⚡ No Prefix Granted!',
+            name: 'No Prefix Granted',
             iconURL: client.user.displayAvatarURL()
         })
         .setThumbnail(target.displayAvatarURL())
         .setDescription(
-            `Wonderful news! 🎉\n\n` +
-            `**${target.tag}** has been granted **No Prefix** access!\n\n` +
-            `They can now use NeroX commands without typing the prefix~ 💫\n` +
-            `This perk is active immediately!`
+            `**${target.tag}** has been granted No Prefix access.\n\n` +
+            `They can now use commands without typing the prefix.`
         )
         .setFooter({ 
-            text: `💖 Granted by ${message.author.tag}`,
+            text: `Granted by ${message.author.tag}`,
             iconURL: message.author.displayAvatarURL()
         })
         .setTimestamp();
@@ -103,17 +100,14 @@ async function addNoPrefix(client, message, args) {
             embeds: [
                 client.embed(client.colors.success)
                     .setAuthor({
-                        name: '🎉 You got No Prefix!',
+                        name: 'You got No Prefix!',
                         iconURL: client.user.displayAvatarURL()
                     })
                     .setDescription(
-                        `Hey there! Amazing news! 💖\n\n` +
-                        `You've been granted **No Prefix** access on **NeroX**!\n\n` +
-                        `This means you can now use commands without typing the prefix. ` +
-                        `Just type the command name directly~ ⚡\n\n` +
-                        `Enjoy your new perk! ✨`
+                        `You've been granted **No Prefix** access on **NeroX**.\n\n` +
+                        `You can now use commands without typing the prefix.`
                     )
-                    .setFooter({ text: '💖 NeroX Studios' })
+                    .setFooter({ text: 'NeroX Studios' })
             ]
         });
     } catch (error) {
@@ -129,7 +123,7 @@ async function removeNoPrefix(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Please mention a user or provide a valid ID! 🔍`)
+                    .setDescription('Please mention a user or provide a valid ID.')
             ]
         });
     }
@@ -139,7 +133,7 @@ async function removeNoPrefix(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.warning)
-                    .setDescription(`${client.emoji.warn} **${target.tag}** doesn't have no-prefix! 🤔`)
+                    .setDescription(`**${target.tag}** doesn't have no-prefix.`)
             ]
         });
     }
@@ -149,7 +143,7 @@ async function removeNoPrefix(client, message, args) {
     await message.reply({
         embeds: [
             client.embed(client.colors.success)
-                .setDescription(`${client.emoji.check} Removed no-prefix from **${target.tag}**! 🗑️`)
+                .setDescription(`Removed no-prefix from **${target.tag}**.`)
         ]
     });
 }
@@ -162,7 +156,7 @@ async function checkNoPrefix(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Please mention a user or provide a valid ID! 🔍`)
+                    .setDescription('Please mention a user or provide a valid ID.')
             ]
         });
     }
@@ -174,10 +168,10 @@ async function checkNoPrefix(client, message, args) {
             client.embed(hasNoPrefix ? client.colors.success : client.colors.info)
                 .setThumbnail(target.displayAvatarURL())
                 .setDescription(
-                    `**No Prefix Status** ⚡\n\n` +
+                    `**No Prefix Status**\n\n` +
                     `User: **${target.tag}**\n` +
-                    `Status: ${hasNoPrefix ? '✅ Has No Prefix!' : '❌ No No Prefix'}\n\n` +
-                    `${hasNoPrefix ? 'They can use commands without prefix~ 💫' : 'They need to use the prefix for commands!'}`
+                    `Status: ${hasNoPrefix ? 'Active' : 'Not Active'}\n\n` +
+                    `${hasNoPrefix ? 'They can use commands without prefix.' : 'They need to use the prefix for commands.'}`
                 )
         ]
     });
@@ -190,7 +184,7 @@ async function listNoPrefix(client, message) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.info)
-                    .setDescription(`${client.emoji.info} No users have no-prefix access yet! 🌟`)
+                    .setDescription('No users have no-prefix access yet.')
             ]
         });
     }
@@ -199,21 +193,20 @@ async function listNoPrefix(client, message) {
     for (const id of keys) {
         const user = await client.users.fetch(id).catch(() => null);
         if (user) {
-            users.push(`⚡ **${user.tag}** (\`${user.id}\`)`);
+            users.push(`**${user.tag}** (\`${user.id}\`)`);
         }
     }
 
     const embed = client.embed(client.colors.primary)
         .setAuthor({
-            name: '⚡ No Prefix Users',
+            name: 'No Prefix Users',
             iconURL: client.user.displayAvatarURL()
         })
         .setDescription(
-            `Here are all users with no-prefix access! 💖\n\n` +
             users.join('\n') +
-            `\n\n*Total: ${users.length} user(s)* ✨`
+            `\n\n*Total: ${users.length} user(s)*`
         )
-        .setFooter({ text: '💖 NeroX Support Manager' })
+        .setFooter({ text: 'NeroX Support Manager' })
         .setTimestamp();
 
     await message.reply({ embeds: [embed] });

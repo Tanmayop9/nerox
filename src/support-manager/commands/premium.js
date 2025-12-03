@@ -18,19 +18,18 @@ export default {
                 embeds: [
                     client.embed(client.colors.info)
                         .setAuthor({
-                            name: '👑 Premium Management',
+                            name: 'Premium Management',
                             iconURL: client.user.displayAvatarURL()
                         })
                         .setDescription(
-                            `Manage premium subscriptions! 💖\n\n` +
+                            `Manage premium subscriptions.\n\n` +
                             `**Commands:**\n` +
                             `\`${client.prefix}premium add <user> <days>\` - Grant premium\n` +
                             `\`${client.prefix}premium remove <user>\` - Remove premium\n` +
                             `\`${client.prefix}premium check <user>\` - Check status\n` +
-                            `\`${client.prefix}premium list\` - View all premium users\n\n` +
-                            `*Premium unlocks exclusive features and perks!* ✨`
+                            `\`${client.prefix}premium list\` - View all premium users`
                         )
-                        .setFooter({ text: '💖 NeroX Support Manager' })
+                        .setFooter({ text: 'NeroX Support Manager' })
                 ]
             });
         }
@@ -60,7 +59,7 @@ async function addPremium(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Please mention a user or provide a valid ID! 🔍`)
+                    .setDescription('Please mention a user or provide a valid ID.')
             ]
         });
     }
@@ -70,7 +69,7 @@ async function addPremium(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.warning)
-                    .setDescription(`${client.emoji.warn} Duration must be between 1 and 365 days! 📅`)
+                    .setDescription('Duration must be between 1 and 365 days.')
             ]
         });
     }
@@ -89,9 +88,9 @@ async function addPremium(client, message, args) {
             embeds: [
                 client.embed(client.colors.success)
                     .setDescription(
-                        `${client.emoji.check} Extended **${target.tag}**'s premium by **${days} days**! 👑\n\n` +
+                        `Extended **${target.tag}**'s premium by **${days} days**.\n\n` +
                         `New expiry: <t:${Math.floor(newExpiry / 1000)}:R>\n` +
-                        `Total: **${totalDays} days** remaining! ✨`
+                        `Total: **${totalDays} days** remaining.`
                     )
             ]
         });
@@ -106,19 +105,17 @@ async function addPremium(client, message, args) {
 
     const embed = client.embed(client.colors.success)
         .setAuthor({
-            name: '👑 Premium Granted!',
+            name: 'Premium Granted',
             iconURL: client.user.displayAvatarURL()
         })
         .setThumbnail(target.displayAvatarURL())
         .setDescription(
-            `Congratulations! 🎉\n\n` +
-            `**${target.tag}** has been granted **Premium** access!\n\n` +
+            `**${target.tag}** has been granted Premium access.\n\n` +
             `**Duration:** ${days} days\n` +
-            `**Expires:** <t:${Math.floor(expiresAt / 1000)}:R>\n\n` +
-            `They now have access to all premium features~ 💫`
+            `**Expires:** <t:${Math.floor(expiresAt / 1000)}:R>`
         )
         .setFooter({ 
-            text: `💖 Granted by ${message.author.tag}`,
+            text: `Granted by ${message.author.tag}`,
             iconURL: message.author.displayAvatarURL()
         })
         .setTimestamp();
@@ -131,17 +128,15 @@ async function addPremium(client, message, args) {
             embeds: [
                 client.embed(client.colors.success)
                     .setAuthor({
-                        name: '🎉 You got Premium!',
+                        name: 'You got Premium!',
                         iconURL: client.user.displayAvatarURL()
                     })
                     .setDescription(
-                        `Hey there! Amazing news! 💖\n\n` +
-                        `You've been granted **Premium** access on **NeroX**!\n\n` +
+                        `You've been granted **Premium** access on **NeroX**.\n\n` +
                         `**Duration:** ${days} days\n` +
-                        `**Expires:** <t:${Math.floor(expiresAt / 1000)}:R>\n\n` +
-                        `Enjoy all the exclusive premium features! 👑✨`
+                        `**Expires:** <t:${Math.floor(expiresAt / 1000)}:R>`
                     )
-                    .setFooter({ text: '💖 NeroX Studios' })
+                    .setFooter({ text: 'NeroX Studios' })
             ]
         });
     } catch (error) {
@@ -157,7 +152,7 @@ async function removePremium(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Please mention a user or provide a valid ID! 🔍`)
+                    .setDescription('Please mention a user or provide a valid ID.')
             ]
         });
     }
@@ -167,7 +162,7 @@ async function removePremium(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.warning)
-                    .setDescription(`${client.emoji.warn} **${target.tag}** doesn't have premium! 🤔`)
+                    .setDescription(`**${target.tag}** doesn't have premium.`)
             ]
         });
     }
@@ -177,7 +172,7 @@ async function removePremium(client, message, args) {
     await message.reply({
         embeds: [
             client.embed(client.colors.success)
-                .setDescription(`${client.emoji.check} Removed premium from **${target.tag}**! 🗑️`)
+                .setDescription(`Removed premium from **${target.tag}**.`)
         ]
     });
 }
@@ -190,7 +185,7 @@ async function checkPremium(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Please mention a user or provide a valid ID! 🔍`)
+                    .setDescription('Please mention a user or provide a valid ID.')
             ]
         });
     }
@@ -201,14 +196,13 @@ async function checkPremium(client, message, args) {
     const embed = client.embed(isActive ? client.colors.success : client.colors.info)
         .setThumbnail(target.displayAvatarURL())
         .setDescription(
-            `**Premium Status** 👑\n\n` +
+            `**Premium Status**\n\n` +
             `User: **${target.tag}**\n` +
-            `Status: ${isActive ? '✅ Premium Active!' : '❌ No Premium'}\n` +
+            `Status: ${isActive ? 'Active' : 'Not Active'}\n` +
             (isActive ? 
                 `\nExpires: <t:${Math.floor(premium.expiresAt / 1000)}:R>\n` +
-                `Days left: **${Math.ceil((premium.expiresAt - Date.now()) / 86400000)}**\n\n` +
-                `They have access to all premium features~ 💫` :
-                `\nThey can get premium through giveaways or direct grant!`)
+                `Days left: **${Math.ceil((premium.expiresAt - Date.now()) / 86400000)}**` :
+                `\nNo active subscription.`)
         );
 
     await message.reply({ embeds: [embed] });
@@ -221,7 +215,7 @@ async function listPremium(client, message) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.info)
-                    .setDescription(`${client.emoji.info} No users have premium access yet! 🌟`)
+                    .setDescription('No users have premium access yet.')
             ]
         });
     }
@@ -233,21 +227,20 @@ async function listPremium(client, message) {
         if (user && data) {
             const daysLeft = Math.ceil((data.expiresAt - Date.now()) / 86400000);
             const status = daysLeft > 0 ? `${daysLeft}d left` : 'Expired';
-            users.push(`👑 **${user.tag}** - ${status}`);
+            users.push(`**${user.tag}** - ${status}`);
         }
     }
 
     const embed = client.embed(client.colors.primary)
         .setAuthor({
-            name: '👑 Premium Users',
+            name: 'Premium Users',
             iconURL: client.user.displayAvatarURL()
         })
         .setDescription(
-            `Here are all premium users! 💖\n\n` +
             users.join('\n') +
-            `\n\n*Total: ${users.length} user(s)* ✨`
+            `\n\n*Total: ${users.length} user(s)*`
         )
-        .setFooter({ text: '💖 NeroX Support Manager' })
+        .setFooter({ text: 'NeroX Support Manager' })
         .setTimestamp();
 
     await message.reply({ embeds: [embed] });
