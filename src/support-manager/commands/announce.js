@@ -17,16 +17,15 @@ export default {
                 embeds: [
                     client.embed(client.colors.info)
                         .setAuthor({
-                            name: '📢 Announcement System',
+                            name: 'Announcement System',
                             iconURL: client.user.displayAvatarURL()
                         })
                         .setDescription(
-                            `Create beautiful announcements! 💖\n\n` +
+                            `Create announcements.\n\n` +
                             `**Usage:**\n` +
                             `\`${client.prefix}announce <message>\` - Simple announcement\n` +
                             `\`${client.prefix}announce -title <title> | <message>\` - With title\n` +
-                            `\`${client.prefix}announce -ping <message>\` - With @everyone ping\n\n` +
-                            `*Make sure to be in the announcement channel!* ✨`
+                            `\`${client.prefix}announce -ping <message>\` - With @everyone ping`
                         )
                 ]
             });
@@ -56,16 +55,16 @@ export default {
 
         const embed = client.embed(client.colors.primary)
             .setAuthor({
-                name: '📢 Announcement',
+                name: 'Announcement',
                 iconURL: client.user.displayAvatarURL()
             })
             .setDescription(
                 (title ? `**${title}**\n\n` : '') +
                 content +
-                `\n\n— *${message.author.tag}* 💖`
+                `\n\n— *${message.author.tag}*`
             )
             .setFooter({ 
-                text: `✨ NeroX Support`,
+                text: 'NeroX Support',
                 iconURL: message.guild.iconURL()
             })
             .setTimestamp();

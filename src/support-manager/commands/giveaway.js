@@ -1,11 +1,9 @@
 /**
  * Giveaway Command - Support Server Manager
  * Create and manage giveaways for noprefix, premium, etc.
- * Error-free and production-ready
  */
 
 import crypto from 'crypto';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 export default {
     name: 'giveaway',
@@ -23,31 +21,25 @@ export default {
                 embeds: [
                     client.embed(client.colors.info)
                         .setAuthor({
-                            name: '🎉 Giveaway System',
+                            name: 'Giveaway System',
                             iconURL: client.user.displayAvatarURL()
                         })
                         .setDescription(
-                            `Welcome to the Giveaway System! 💖\n\n` +
-                            `**📝 Available Commands:**\n` +
+                            `**Commands:**\n` +
                             `\`${client.prefix}giveaway create <duration> <prize> <winners> [channel]\`\n` +
                             `\`${client.prefix}giveaway end <id>\` - End a giveaway early\n` +
                             `\`${client.prefix}giveaway reroll <id>\` - Pick new winners\n` +
                             `\`${client.prefix}giveaway list\` - View active giveaways\n` +
                             `\`${client.prefix}giveaway info <id>\` - View giveaway details\n` +
                             `\`${client.prefix}giveaway delete <id>\` - Delete a giveaway\n\n` +
-                            `**🎁 Prize Types:**\n` +
-                            `• \`noprefix\` - ⚡ No Prefix Access\n` +
-                            `• \`premium\` - 👑 Premium Subscription (30 days)\n\n` +
-                            `**⏱️ Duration Examples:**\n` +
-                            `• \`10m\` - 10 minutes\n` +
-                            `• \`1h\` - 1 hour\n` +
-                            `• \`1d\` - 1 day\n` +
-                            `• \`1w\` - 1 week\n\n` +
+                            `**Prize Types:**\n` +
+                            `\`noprefix\` - No Prefix Access\n` +
+                            `\`premium\` - Premium (30 days)\n\n` +
+                            `**Duration:** \`10m\`, \`1h\`, \`1d\`, \`1w\`\n\n` +
                             `**Example:**\n` +
-                            `\`${client.prefix}giveaway create 1h noprefix 1\`\n\n` +
-                            `*Let's make someone's day special!* ✨`
+                            `\`${client.prefix}giveaway create 1h noprefix 1\``
                         )
-                        .setFooter({ text: '💖 NeroX Support Manager' })
+                        .setFooter({ text: 'NeroX Support Manager' })
                         .setTimestamp()
                 ]
             });
@@ -79,7 +71,7 @@ export default {
             return message.reply({
                 embeds: [
                     client.embed(client.colors.error)
-                        .setDescription(`${client.emoji.cross} An error occurred: ${error.message}`)
+                        .setDescription(`An error occurred: ${error.message}`)
                 ]
             });
         }
@@ -93,7 +85,7 @@ async function createGiveaway(client, message, args) {
             embeds: [
                 client.embed(client.colors.warning)
                     .setDescription(
-                        `${client.emoji.warn} Missing arguments! 📝\n\n` +
+                        `Missing arguments.\n\n` +
                         `**Usage:** \`${client.prefix}giveaway create <duration> <prize> <winners> [channel]\`\n\n` +
                         `**Example:** \`${client.prefix}giveaway create 1h noprefix 1\``
                     )
@@ -112,7 +104,7 @@ async function createGiveaway(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Invalid duration! Minimum is 1 minute.\n\nUse: \`10m\`, \`1h\`, \`1d\`, \`1w\``)
+                    .setDescription(`Invalid duration. Minimum is 1 minute.\n\nUse: \`10m\`, \`1h\`, \`1d\`, \`1w\``)
             ]
         });
     }
@@ -122,7 +114,7 @@ async function createGiveaway(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Invalid prize type!\n\nValid types: \`noprefix\`, \`premium\``)
+                    .setDescription(`Invalid prize type.\n\nValid types: \`noprefix\`, \`premium\``)
             ]
         });
     }
@@ -132,7 +124,7 @@ async function createGiveaway(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Winners must be between 1 and 10!`)
+                    .setDescription(`Winners must be between 1 and 10.`)
             ]
         });
     }
@@ -142,22 +134,20 @@ async function createGiveaway(client, message, args) {
     const endsAt = Date.now() + duration;
     const prizeInfo = getPrizeInfo(prize);
 
-    // Create giveaway embed
+    // Create giveaway embed - minimalist design
     const embed = client.embed(client.colors.primary)
         .setAuthor({
-            name: '🎉 GIVEAWAY',
+            name: 'GIVEAWAY',
             iconURL: client.user.displayAvatarURL()
         })
-        .setThumbnail(client.user.displayAvatarURL())
         .setDescription(
-            `React with 🎉 to enter!\n\n` +
-            `**${prizeInfo.emoji} Prize:** ${prizeInfo.name}\n` +
-            `**🏆 Winners:** ${winnersCount}\n` +
-            `**⏰ Ends:** <t:${Math.floor(endsAt / 1000)}:R>\n` +
-            `**👤 Host:** ${message.author}\n\n` +
-            `*Good luck!* ✨`
+            `React with 🎉 to enter.\n\n` +
+            `**Prize:** ${prizeInfo.name}\n` +
+            `**Winners:** ${winnersCount}\n` +
+            `**Ends:** <t:${Math.floor(endsAt / 1000)}:R>\n` +
+            `**Host:** ${message.author}`
         )
-        .setFooter({ text: `ID: ${giveawayId} • React to enter!` })
+        .setFooter({ text: `ID: ${giveawayId}` })
         .setTimestamp(endsAt);
 
     // Send the giveaway message
@@ -169,7 +159,7 @@ async function createGiveaway(client, message, args) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Failed to send giveaway message! Check channel permissions.`)
+                    .setDescription(`Failed to send giveaway message. Check channel permissions.`)
             ]
         });
     }
@@ -197,7 +187,7 @@ async function createGiveaway(client, message, args) {
         embeds: [
             client.embed(client.colors.success)
                 .setDescription(
-                    `${client.emoji.check} Giveaway created! 🎉\n\n` +
+                    `Giveaway created.\n\n` +
                     `**ID:** \`${giveawayId}\`\n` +
                     `**Channel:** ${channel}\n` +
                     `**Ends:** <t:${Math.floor(endsAt / 1000)}:R>`
@@ -212,7 +202,7 @@ async function endGiveawayCommand(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.warning)
-                    .setDescription(`${client.emoji.warn} Please provide a giveaway ID!`)
+                    .setDescription(`Please provide a giveaway ID.`)
             ]
         });
     }
@@ -222,7 +212,7 @@ async function endGiveawayCommand(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Giveaway \`${giveawayId}\` not found!`)
+                    .setDescription(`Giveaway \`${giveawayId}\` not found.`)
             ]
         });
     }
@@ -231,7 +221,7 @@ async function endGiveawayCommand(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.warning)
-                    .setDescription(`${client.emoji.warn} This giveaway has already ended!`)
+                    .setDescription(`This giveaway has already ended.`)
             ]
         });
     }
@@ -241,7 +231,7 @@ async function endGiveawayCommand(client, message, giveawayId) {
     await message.reply({
         embeds: [
             client.embed(client.colors.success)
-                .setDescription(`${client.emoji.check} Giveaway \`${giveawayId}\` has been ended!`)
+                .setDescription(`Giveaway \`${giveawayId}\` has been ended.`)
         ]
     });
 }
@@ -309,19 +299,19 @@ async function endGiveaway(client, giveawayId) {
             }
         }
 
-        // Create ended embed
+        // Create ended embed - minimalist design
         const endedEmbed = client.embed('#2F3136')
             .setAuthor({
-                name: '🎉 GIVEAWAY ENDED',
+                name: 'GIVEAWAY ENDED',
                 iconURL: client.user.displayAvatarURL()
             })
             .setDescription(
-                `**${prizeInfo.emoji} Prize:** ${prizeInfo.name}\n` +
-                `**👥 Entries:** ${participants.length}\n` +
-                `**🏆 Winner${winners.length !== 1 ? 's' : ''}:** ${winners.length > 0 ? winners.map(id => `<@${id}>`).join(', ') : 'No valid entries'}\n\n` +
-                `${winners.length > 0 ? '🎊 Congratulations! Prizes have been applied!' : '😢 No winners this time...'}`
+                `**Prize:** ${prizeInfo.name}\n` +
+                `**Entries:** ${participants.length}\n` +
+                `**Winner${winners.length !== 1 ? 's' : ''}:** ${winners.length > 0 ? winners.map(id => `<@${id}>`).join(', ') : 'No valid entries'}\n\n` +
+                `${winners.length > 0 ? 'Congratulations! Prizes have been applied.' : 'No winners this time.'}`
             )
-            .setFooter({ text: `ID: ${giveawayId} • Ended` })
+            .setFooter({ text: `ID: ${giveawayId} | Ended` })
             .setTimestamp();
 
         await giveawayMsg.edit({ embeds: [endedEmbed] });
@@ -329,7 +319,7 @@ async function endGiveaway(client, giveawayId) {
         // Announce winners
         if (winners.length > 0) {
             await channel.send({
-                content: `🎉 **Congratulations** ${winners.map(id => `<@${id}>`).join(', ')}!\n\nYou won **${prizeInfo.name}**! Your prize has been applied~ 💖`,
+                content: `**Congratulations** ${winners.map(id => `<@${id}>`).join(', ')}! You won **${prizeInfo.name}**.`,
             });
         }
 
@@ -345,7 +335,7 @@ async function rerollGiveaway(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.warning)
-                    .setDescription(`${client.emoji.warn} Please provide a giveaway ID!`)
+                    .setDescription(`Please provide a giveaway ID.`)
             ]
         });
     }
@@ -355,7 +345,7 @@ async function rerollGiveaway(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Giveaway \`${giveawayId}\` not found!`)
+                    .setDescription(`Giveaway \`${giveawayId}\` not found.`)
             ]
         });
     }
@@ -364,7 +354,7 @@ async function rerollGiveaway(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.warning)
-                    .setDescription(`${client.emoji.warn} This giveaway hasn't ended yet!`)
+                    .setDescription(`This giveaway hasn't ended yet.`)
             ]
         });
     }
@@ -376,7 +366,7 @@ async function rerollGiveaway(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} No eligible participants for reroll!`)
+                    .setDescription(`No eligible participants for reroll.`)
             ]
         });
     }
@@ -400,7 +390,7 @@ async function rerollGiveaway(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Failed to apply prize!`)
+                    .setDescription(`Failed to apply prize.`)
             ]
         });
     }
@@ -415,14 +405,14 @@ async function rerollGiveaway(client, message, giveawayId) {
     const channel = await client.channels.fetch(giveaway.channelId).catch(() => null);
     if (channel) {
         await channel.send({
-            content: `🎉 **Reroll Winner!** <@${newWinner}>\n\nYou won **${prizeInfo.name}**! 💖`,
+            content: `**Reroll Winner!** <@${newWinner}> - You won **${prizeInfo.name}**.`,
         });
     }
 
     await message.reply({
         embeds: [
             client.embed(client.colors.success)
-                .setDescription(`${client.emoji.check} Rerolled! New winner: <@${newWinner}>`)
+                .setDescription(`Rerolled. New winner: <@${newWinner}>`)
         ]
     });
 }
@@ -443,25 +433,25 @@ async function listGiveaways(client, message) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.info)
-                    .setDescription(`${client.emoji.info} No active giveaways!\n\nCreate one with \`${client.prefix}giveaway create\``)
+                    .setDescription(`No active giveaways.\n\nCreate one with \`${client.prefix}giveaway create\``)
             ]
         });
     }
 
     const embed = client.embed(client.colors.primary)
         .setAuthor({
-            name: '🎉 Active Giveaways',
+            name: 'Active Giveaways',
             iconURL: client.user.displayAvatarURL()
         })
         .setDescription(
             activeGiveaways.map(gw => {
                 const prizeInfo = getPrizeInfo(gw.prize);
-                return `**${prizeInfo.emoji} ${gw.id}**\n` +
+                return `**${gw.id}**\n` +
                     `Prize: ${prizeInfo.name}\n` +
                     `Winners: ${gw.winners} • Ends: <t:${Math.floor(gw.endsAt / 1000)}:R>`;
             }).join('\n\n')
         )
-        .setFooter({ text: `💖 ${activeGiveaways.length} active giveaway(s)` })
+        .setFooter({ text: `${activeGiveaways.length} active giveaway(s)` })
         .setTimestamp();
 
     await message.reply({ embeds: [embed] });
@@ -473,7 +463,7 @@ async function giveawayInfo(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.warning)
-                    .setDescription(`${client.emoji.warn} Please provide a giveaway ID!`)
+                    .setDescription(`Please provide a giveaway ID.`)
             ]
         });
     }
@@ -483,7 +473,7 @@ async function giveawayInfo(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Giveaway \`${giveawayId}\` not found!`)
+                    .setDescription(`Giveaway \`${giveawayId}\` not found.`)
             ]
         });
     }
@@ -493,23 +483,23 @@ async function giveawayInfo(client, message, giveawayId) {
 
     const embed = client.embed(client.colors.info)
         .setAuthor({
-            name: `🎉 Giveaway Info: ${giveaway.id}`,
+            name: `Giveaway Info: ${giveaway.id}`,
             iconURL: client.user.displayAvatarURL()
         })
         .setDescription(
-            `**${prizeInfo.emoji} Prize:** ${prizeInfo.name}\n` +
-            `**🏆 Winners:** ${giveaway.winners}\n` +
-            `**👤 Host:** ${host?.tag || giveaway.hostId}\n` +
-            `**📊 Status:** ${giveaway.ended ? '❌ Ended' : '✅ Active'}\n` +
-            `**⏰ ${giveaway.ended ? 'Ended' : 'Ends'}:** <t:${Math.floor((giveaway.endedAt || giveaway.endsAt) / 1000)}:R>\n` +
-            `**👥 Participants:** ${giveaway.participants?.length || 'Counting...'}\n` +
+            `**Prize:** ${prizeInfo.name}\n` +
+            `**Winners:** ${giveaway.winners}\n` +
+            `**Host:** ${host?.tag || giveaway.hostId}\n` +
+            `**Status:** ${giveaway.ended ? 'Ended' : 'Active'}\n` +
+            `**${giveaway.ended ? 'Ended' : 'Ends'}:** <t:${Math.floor((giveaway.endedAt || giveaway.endsAt) / 1000)}:R>\n` +
+            `**Participants:** ${giveaway.participants?.length || 'Counting...'}\n` +
             (giveaway.ended && giveaway.winnersIds?.length > 0 
-                ? `**🏆 Winners:** ${giveaway.winnersIds.map(id => `<@${id}>`).join(', ')}\n` 
+                ? `**Winners:** ${giveaway.winnersIds.map(id => `<@${id}>`).join(', ')}\n` 
                 : '') +
-            `\n**📍 Channel:** <#${giveaway.channelId}>\n` +
-            `**📝 Message ID:** \`${giveaway.messageId}\``
+            `\n**Channel:** <#${giveaway.channelId}>\n` +
+            `**Message ID:** \`${giveaway.messageId}\``
         )
-        .setFooter({ text: '💖 NeroX Support Manager' })
+        .setFooter({ text: 'NeroX Support Manager' })
         .setTimestamp();
 
     await message.reply({ embeds: [embed] });
@@ -521,7 +511,7 @@ async function deleteGiveaway(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.warning)
-                    .setDescription(`${client.emoji.warn} Please provide a giveaway ID!`)
+                    .setDescription(`Please provide a giveaway ID.`)
             ]
         });
     }
@@ -531,7 +521,7 @@ async function deleteGiveaway(client, message, giveawayId) {
         return message.reply({
             embeds: [
                 client.embed(client.colors.error)
-                    .setDescription(`${client.emoji.cross} Giveaway \`${giveawayId}\` not found!`)
+                    .setDescription(`Giveaway \`${giveawayId}\` not found.`)
             ]
         });
     }
@@ -550,7 +540,7 @@ async function deleteGiveaway(client, message, giveawayId) {
     await message.reply({
         embeds: [
             client.embed(client.colors.success)
-                .setDescription(`${client.emoji.check} Giveaway \`${giveawayId}\` has been deleted!`)
+                .setDescription(`Giveaway \`${giveawayId}\` has been deleted.`)
         ]
     });
 }
@@ -578,10 +568,10 @@ function parseDuration(str) {
 
 function getPrizeInfo(prize) {
     const prizes = {
-        noprefix: { emoji: '⚡', name: 'No Prefix Access' },
-        premium: { emoji: '👑', name: 'Premium (30 days)' },
+        noprefix: { emoji: '', name: 'No Prefix Access' },
+        premium: { emoji: '', name: 'Premium (30 days)' },
     };
-    return prizes[prize] || { emoji: '🎁', name: prize };
+    return prizes[prize] || { emoji: '', name: prize };
 }
 
 // Schedule giveaway end - uses setTimeout for short durations, 

@@ -28,27 +28,26 @@ export default {
 
         const embed = client.embed(client.colors.primary)
             .setAuthor({
-                name: `✨ ${client.user.username} Stats`,
+                name: `${client.user.username} Stats`,
                 iconURL: client.user.displayAvatarURL()
             })
             .setThumbnail(client.user.displayAvatarURL())
             .setDescription(
-                `Hey there! Here's how I'm doing~ 💖\n\n` +
-                `I'm the **NeroX Support Manager**, helping to keep everything running smoothly ` +
-                `in the support server! I've been awake for **${uptime}** and using **${memUsage} MB** of memory. 🌟\n\n` +
-                `**📊 Database Stats**\n` +
-                `Currently managing **${noPrefixCount}** no-prefix users and **${premiumCount}** premium subscribers! ` +
-                `That's a lot of happy users~ ✨\n\n` +
-                `**🎉 Giveaway Stats**\n` +
-                `There are **${activeGiveaways}** active giveaway${activeGiveaways !== 1 ? 's' : ''} running right now, ` +
-                `and I've successfully completed **${endedGiveaways}** giveaway${endedGiveaways !== 1 ? 's' : ''}! ` +
-                `${activeGiveaways > 0 ? 'Join one now to win amazing prizes! 🎁' : 'Stay tuned for the next one! 🌸'}\n\n` +
-                `**🖥️ System Info**\n` +
-                `Running on **Node.js ${process.version}** with **${client.commands.size} commands** loaded! ` +
-                `Latency is **${client.ws.ping}ms** - ${client.ws.ping < 100 ? 'super fast! 🚀' : 'doing great! ⚡'}`
+                `**Uptime:** ${uptime}\n` +
+                `**Memory:** ${memUsage} MB\n` +
+                `**Latency:** ${client.ws.ping}ms\n\n` +
+                `**Database**\n` +
+                `No-prefix users: ${noPrefixCount}\n` +
+                `Premium users: ${premiumCount}\n\n` +
+                `**Giveaways**\n` +
+                `Active: ${activeGiveaways}\n` +
+                `Completed: ${endedGiveaways}\n\n` +
+                `**System**\n` +
+                `Node.js: ${process.version}\n` +
+                `Commands: ${client.commands.size}`
             )
             .setFooter({ 
-                text: `💖 Made with love • Requested by ${message.author.tag}`,
+                text: `Requested by ${message.author.tag}`,
                 iconURL: message.author.displayAvatarURL()
             })
             .setTimestamp();

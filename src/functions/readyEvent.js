@@ -24,11 +24,12 @@ const checkPremiumExpiries = async (client) => {
     let expiredUsers = 0;
     let expiredServers = 0;
 
-    // User Premium Expiry
+    // User Premium Expiry - check both 'expires' and 'expiresAt' for compatibility
     const userKeys = await client.db.botstaff.keys;
     for (const id of userKeys) {
         const data = await client.db.botstaff.get(id);
-        if (data?.expires && data.expires < now) {
+        const expiryTime = data?.expiresAt || data?.expires;
+        if (expiryTime && expiryTime < now) {
             await client.db.botstaff.delete(id).catch(() => {});
             expiredUsers++;
 
@@ -36,16 +37,16 @@ const checkPremiumExpiries = async (client) => {
             if (user) {
                 user.send({
                     embeds: [
-                        new client.embed(client.color)
-                            .title(`${client.emoji.warn} Premium Expired`)
-                            .desc(`${client.emoji.cross} Your **Nerox Premium** has expired.\n\nTo renew, click the button below or join our [Support Server](${SUPPORT_SERVER})`)
-                            .footer({ text: `Nerox Premium | Expired` })
+                        client.embed('#FF6B6B')
+                            .title('Premium Expired')
+                            .desc(`Your **Nerox Premium** has expired.\n\nTo renew, click the button below or join our [Support Server](${SUPPORT_SERVER})`)
+                            .footer({ text: 'Nerox Premium | Expired' })
                     ],
                     components: [
                         {
                             type: 1,
                             components: [
-                                new client.button().link('Renew Premium', SUPPORT_SERVER)
+                                client.button().link('Renew Premium', SUPPORT_SERVER)
                             ]
                         }
                     ]
@@ -56,11 +57,12 @@ const checkPremiumExpiries = async (client) => {
         }
     }
 
-    // Server Premium Expiry
+    // Server Premium Expiry - check both 'expires' and 'expiresAt' for compatibility
     const serverKeys = await client.db.serverstaff.keys;
     for (const id of serverKeys) {
         const data = await client.db.serverstaff.get(id);
-        if (data?.expires && data.expires < now) {
+        const expiryTime = data?.expiresAt || data?.expires;
+        if (expiryTime && expiryTime < now) {
             await client.db.serverstaff.delete(id).catch(() => {});
             expiredServers++;
             client.log(`Expired server premium: ${id}`, 'warn');
