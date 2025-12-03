@@ -8,6 +8,7 @@
   "main": "./src/index.js",
   "scripts": {
     "start": "node .",
+    "support": "node ./src/support-manager/index.js",
     "lint": "eslint .",
     "build": "rimraf dist && tsc",
     "format": "prettier --log-level error --write .",

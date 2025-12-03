@@ -27,57 +27,63 @@ export default class Help extends Command {
 			.filter(category => !['owner', 'mod', 'debug'].includes(category));
 
 		const totalCommands = client.commands.filter(cmd => !['owner', 'mod', 'debug'].includes(cmd.category)).size;
+		const totalUsers = client.guilds.cache.reduce((acc, g) => acc + g.memberCount, 0);
+		const activePlayers = client.manager?.players?.size || 0;
 
 		const embed = client.embed('#FF69B4')
 			.setAuthor({ 
-				name: `${client.user.username} Command Center`,
+				name: `✨ ${client.user.username} Help Center`,
 				iconURL: client.user.displayAvatarURL()
 			})
 			.setThumbnail(client.user.displayAvatarURL())
 			.desc(
-				`**Music Bot by NeroX Studios**\n\n` +
-				`**Quick Info**\n` +
-				`${client.emoji.info} Prefix: \`${client.prefix}\`\n` +
-				`${client.emoji.info} Total Commands: \`${totalCommands}\`\n` +
-				`${client.emoji.info} Categories: \`${categories.length}\`\n\n` +
-				`**How to Use**\n` +
-				`Use \`${client.prefix}<command> -guide\` for command details\n\n` +
-				`**Argument Guide**\n` +
-				`\`<>\` = Required | \`[]\` = Optional\n\n` +
-				`**Navigation**\n` +
-				`Select a category from the dropdown below!`
+				`Hey there, lovely! Welcome to my help center~ 💕\n\n` +
+				`I'm **${client.user.username}**, your adorable music companion! Currently, I'm hanging out in ` +
+				`**${client.guilds.cache.size.toLocaleString()} servers** with **${totalUsers.toLocaleString()} amazing users**, ` +
+				`and right now **${activePlayers} player${activePlayers !== 1 ? 's are' : ' is'}** enjoying music! 🎵\n\n` +
+				`**🎀 Quick Start Guide**\n` +
+				`My prefix is \`${client.prefix}\` - just type it before any command!\n` +
+				`I have **${totalCommands} commands** across **${categories.length} categories** ready for you~ ✨\n\n` +
+				`**📖 Need Help with a Command?**\n` +
+				`Use \`${client.prefix}<command> -guide\` to learn more about any command!\n\n` +
+				`**🔮 Argument Types**\n` +
+				`\`<>\` means required • \`[]\` means optional\n\n` +
+				`*Pick a category below to explore my commands!* 🌸`
 			)
 			.footer({ 
-				text: `Powered by NeroX Studios • ${client.guilds.cache.size} Servers`,
+				text: `💖 Made with love • ${client.guilds.cache.size} Servers`,
 				iconURL: ctx.author.displayAvatarURL()
 			})
 			.setTimestamp();
 
 		const categoryEmojis = {
-			music: client.emoji.music || 'MUSIC',
-			information: client.emoji.info1 || 'INFO',
-			premium: client.emoji.premium || 'PREMIUM',
+			music: '🎵',
+			information: '📊',
+			premium: '👑',
 		};
 
 		const menu = new StringSelectMenuBuilder()
 			.setCustomId('menu')
-			.setPlaceholder('Select a category to explore commands')
+			.setPlaceholder('🌸 Select a category to explore~')
 			.setMaxValues(1)
 			.addOptions([
 				{
 					label: 'Home',
 					value: 'home',
-					description: 'Return to main menu',
+					description: 'Return to the cozy main menu!',
+					emoji: '🏠',
 				},
 				...categories.map(category => ({
 					label: `${category.charAt(0).toUpperCase() + category.slice(1)} Commands`,
 					value: category,
-					description: `View ${allCommands[category]?.length || 0} ${category} commands`,
+					description: `Explore ${allCommands[category]?.length || 0} ${category} commands!`,
+					emoji: categoryEmojis[category] || '✨',
 				})),
 				{
 					label: 'All Commands',
 					value: 'all',
-					description: 'View all available commands',
+					description: 'View everything I can do!',
+					emoji: '📜',
 				},
 			]);
 
@@ -103,19 +109,22 @@ export default class Help extends Command {
 				case 'all':
 					const allEmbed = client.embed('#FF69B4')
 						.setAuthor({ 
-							name: `${client.user.username} - All Commands`,
+							name: `📜 ${client.user.username} - All Commands`,
 							iconURL: client.user.displayAvatarURL()
 						})
+						.setThumbnail(client.user.displayAvatarURL())
 						.desc(
+							`Here's everything I can do for you! 💕\n\n` +
 							Object.entries(allCommands)
 								.sort((a, b) => a[0].localeCompare(b[0]))
 								.map(([cat, cmds]) =>
-									`**${cat.charAt(0).toUpperCase() + cat.slice(1)}** (\`${cmds.length}\`)\n` +
-									`> ${cmds.map(cmd => `\`${cmd.name}\``).join(', ')}`
-								).join('\n\n')
+									`**${categoryEmojis[cat] || '✨'} ${cat.charAt(0).toUpperCase() + cat.slice(1)}** (\`${cmds.length} commands\`)\n` +
+									`> ${cmds.map(cmd => `\`${cmd.name}\``).join(' • ')}`
+								).join('\n\n') +
+							`\n\n*Use \`${client.prefix}<command> -guide\` for detailed help!* 🌟`
 						)
 						.footer({ 
-							text: `Total: ${totalCommands} commands`,
+							text: `💖 Total: ${totalCommands} commands at your service!`,
 							iconURL: ctx.author.displayAvatarURL()
 						})
 						.setTimestamp();
@@ -124,22 +133,25 @@ export default class Help extends Command {
 
 				default:
 					const selectedCommands = allCommands[selected] || [];
+					const categoryEmoji = categoryEmojis[selected] || '✨';
 					const categoryEmbed = client.embed('#FF69B4')
 						.setAuthor({ 
-							name: `${client.user.username} - ${selected.charAt(0).toUpperCase() + selected.slice(1)} Commands`,
+							name: `${categoryEmoji} ${client.user.username} - ${selected.charAt(0).toUpperCase() + selected.slice(1)}`,
 							iconURL: client.user.displayAvatarURL()
 						})
 						.setThumbnail(client.user.displayAvatarURL())
 						.desc(
 							selectedCommands.length
-								? `**Available Commands (\`${selectedCommands.length}\`)**\n\n` +
+								? `Here are all my **${selected}** commands! 🌸\n\n` +
+								  `I have **${selectedCommands.length} commands** in this category ready to help you~\n\n` +
 								  selectedCommands.map(cmd =>
-									`**\`${cmd.name.padEnd(12)}\`** • ${cmd.description}`
-								  ).join('\n')
-								: `${client.emoji.warn} No commands available in this category.`
+									`**\`${client.prefix}${cmd.name}\`**\n└ ${cmd.description}`
+								  ).join('\n\n') +
+								  `\n\n*Tip: Use \`${client.prefix}<command> -guide\` for more details!* 💕`
+								: `Oops! No commands here yet... 🥺`
 						)
 						.footer({ 
-							text: `Use ${client.prefix}<command> -guide for detailed help`,
+							text: `💖 ${selected.charAt(0).toUpperCase() + selected.slice(1)} • ${selectedCommands.length} commands`,
 							iconURL: ctx.author.displayAvatarURL()
 						})
 						.setTimestamp();
