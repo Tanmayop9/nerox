@@ -130,9 +130,13 @@ async function sendLavalinkStats(client) {
             
             // Bulk delete messages (only works for messages < 14 days old)
             if (toDelete.size > 0) {
-                await channel.bulkDelete(toDelete, true).catch(() => {
-                    // If bulk delete fails, delete individually
-                    toDelete.forEach(msg => msg.delete().catch(() => {}));
+                await channel.bulkDelete(toDelete, true).catch(async () => {
+                    // If bulk delete fails, delete individually with delay to avoid rate limits
+                    const msgs = [...toDelete.values()].slice(0, 10); // Limit to 10 messages
+                    for (const msg of msgs) {
+                        await msg.delete().catch(() => {});
+                        await new Promise(r => setTimeout(r, 500)); // 500ms delay between deletions
+                    }
                 });
             }
         }
@@ -167,7 +171,8 @@ async function sendLavalinkStats(client) {
 // Fetch Lavalink stats from REST API
 async function fetchLavalinkStats() {
     try {
-        const response = await axios.get(`http://${LAVALINK_HOST}:${LAVALINK_PORT}/v4/stats`, {
+        const protocol = process.env.LAVALINK_SECURE === 'true' ? 'https' : 'http';
+        const response = await axios.get(`${protocol}://${LAVALINK_HOST}:${LAVALINK_PORT}/v4/stats`, {
             headers: {
                 'Authorization': LAVALINK_PASSWORD
             },
