@@ -1,6 +1,6 @@
 /**
  * Ready Event - Support Server Manager
- * Handles bot startup and giveaway scheduling
+ * Handles bot startup and giveaway management with periodic checks
  */
 
 export default {
@@ -25,16 +25,50 @@ export default {
             status: 'online',
         });
 
-        // Resume active giveaways
-        await resumeGiveaways(client);
+        // Initialize giveaway timeout storage
+        client.giveawayTimeouts = new Map();
+
+        // Process any giveaways that expired while bot was offline
+        await processExpiredGiveaways(client);
+
+        // Start periodic giveaway check (every 30 seconds)
+        // This is more reliable than long setTimeout calls
+        setInterval(() => checkActiveGiveaways(client), 30000);
+        
+        console.log('[Giveaway] Periodic check system started (30s interval)');
     }
 };
 
-async function resumeGiveaways(client) {
+// Check for expired giveaways periodically
+async function checkActiveGiveaways(client) {
     try {
         const giveawayKeys = await client.db.giveaways.keys;
-        let resumed = 0;
-        let ended = 0;
+        
+        for (const giveawayId of giveawayKeys) {
+            try {
+                const giveaway = await client.db.giveaways.get(giveawayId);
+                
+                if (!giveaway || giveaway.ended) continue;
+                
+                // Check if giveaway has ended
+                if (Date.now() >= giveaway.endsAt) {
+                    await endGiveaway(client, giveawayId, giveaway);
+                }
+            } catch (err) {
+                console.error(`[Giveaway] Error checking ${giveawayId}:`, err);
+            }
+        }
+    } catch (error) {
+        console.error('[Giveaway] Error in periodic check:', error);
+    }
+}
+
+// Process expired giveaways on startup
+async function processExpiredGiveaways(client) {
+    try {
+        const giveawayKeys = await client.db.giveaways.keys;
+        let processed = 0;
+        let active = 0;
 
         for (const giveawayId of giveawayKeys) {
             try {
@@ -42,52 +76,55 @@ async function resumeGiveaways(client) {
                 
                 if (!giveaway || giveaway.ended) continue;
 
-                const timeLeft = giveaway.endsAt - Date.now();
-
-                if (timeLeft <= 0) {
-                    // Giveaway should have ended while bot was offline
-                    await endGiveawayOnStartup(client, giveawayId, giveaway);
-                    ended++;
+                if (Date.now() >= giveaway.endsAt) {
+                    await endGiveaway(client, giveawayId, giveaway);
+                    processed++;
                 } else {
-                    // Schedule the giveaway to end
-                    scheduleEnd(client, giveawayId, timeLeft);
-                    resumed++;
+                    active++;
                 }
             } catch (err) {
                 console.error(`[Giveaway] Error processing ${giveawayId}:`, err);
             }
         }
 
-        if (resumed > 0 || ended > 0) {
-            console.log(`[Giveaway] Resumed ${resumed} active, ended ${ended} expired giveaways`);
+        if (processed > 0 || active > 0) {
+            console.log(`[Giveaway] Startup: ${processed} ended, ${active} active giveaways`);
         }
     } catch (error) {
-        console.error('[Giveaway] Error resuming giveaways:', error);
+        console.error('[Giveaway] Error processing expired giveaways:', error);
     }
 }
 
-async function endGiveawayOnStartup(client, giveawayId, giveaway) {
+// End a giveaway and select winners
+async function endGiveaway(client, giveawayId, giveaway) {
     try {
-        // Fetch channel and message
+        // Fetch channel
         const channel = await client.channels.fetch(giveaway.channelId).catch(() => null);
         if (!channel) {
             await client.db.giveaways.set(giveawayId, { ...giveaway, ended: true });
+            console.log(`[Giveaway] ${giveawayId} ended - channel not found`);
             return;
         }
 
+        // Fetch message
         const giveawayMsg = await channel.messages.fetch(giveaway.messageId).catch(() => null);
         if (!giveawayMsg) {
             await client.db.giveaways.set(giveawayId, { ...giveaway, ended: true });
+            console.log(`[Giveaway] ${giveawayId} ended - message not found`);
             return;
         }
 
         // Get participants from reactions
-        const reaction = giveawayMsg.reactions.cache.get('🎉');
         let participants = [];
-
+        const reaction = giveawayMsg.reactions.cache.get('🎉');
+        
         if (reaction) {
-            const users = await reaction.users.fetch();
-            participants = users.filter(u => !u.bot).map(u => u.id);
+            try {
+                const users = await reaction.users.fetch();
+                participants = users.filter(u => !u.bot).map(u => u.id);
+            } catch (err) {
+                console.error(`[Giveaway] Error fetching reactions for ${giveawayId}:`, err);
+            }
         }
 
         // Select random winners
@@ -98,7 +135,7 @@ async function endGiveawayOnStartup(client, giveawayId, giveaway) {
             winners.push(shuffled[i]);
         }
 
-        // Update database
+        // Update database FIRST to prevent re-processing
         await client.db.giveaways.set(giveawayId, {
             ...giveaway,
             ended: true,
@@ -107,7 +144,7 @@ async function endGiveawayOnStartup(client, giveawayId, giveaway) {
             endedAt: Date.now(),
         });
 
-        // Apply prizes
+        // Apply prizes to winners
         const prizeInfo = getPrizeInfo(giveaway.prize);
         for (const winnerId of winners) {
             try {
@@ -115,7 +152,7 @@ async function endGiveawayOnStartup(client, giveawayId, giveaway) {
                     await client.db.noPrefix.set(winnerId, true);
                 } else if (giveaway.prize === 'premium') {
                     await client.db.botstaff.set(winnerId, {
-                        expiresAt: Date.now() + 30 * 86400000,
+                        expiresAt: Date.now() + 30 * 86400000, // 30 days
                         redeemedAt: Date.now(),
                         addedBy: 'Giveaway',
                     });
@@ -125,7 +162,7 @@ async function endGiveawayOnStartup(client, giveawayId, giveaway) {
             }
         }
 
-        // Update message
+        // Update giveaway message
         const endedEmbed = client.embed('#2F3136')
             .setAuthor({
                 name: '🎉 GIVEAWAY ENDED',
@@ -135,7 +172,7 @@ async function endGiveawayOnStartup(client, giveawayId, giveaway) {
                 `**${prizeInfo.emoji} Prize:** ${prizeInfo.name}\n` +
                 `**👥 Entries:** ${participants.length}\n` +
                 `**🏆 Winner${winners.length !== 1 ? 's' : ''}:** ${winners.length > 0 ? winners.map(id => `<@${id}>`).join(', ') : 'No valid entries'}\n\n` +
-                `${winners.length > 0 ? '🎊 Congratulations!' : '😢 No winners this time...'}`
+                `${winners.length > 0 ? '🎊 Congratulations! Prizes applied!' : '😢 No winners this time...'}`
             )
             .setFooter({ text: `ID: ${giveawayId} • Ended` })
             .setTimestamp();
@@ -149,23 +186,17 @@ async function endGiveawayOnStartup(client, giveawayId, giveaway) {
             }).catch(() => null);
         }
 
+        console.log(`[Giveaway] ${giveawayId} ended - ${winners.length} winner(s) from ${participants.length} entries`);
+
     } catch (error) {
-        console.error(`[Giveaway] Error ending ${giveawayId} on startup:`, error);
-        await client.db.giveaways.set(giveawayId, { ...giveaway, ended: true });
-    }
-}
-
-function scheduleEnd(client, giveawayId, delay) {
-    setTimeout(async () => {
+        console.error(`[Giveaway] Error ending ${giveawayId}:`, error);
+        // Mark as ended to prevent infinite retries
         try {
-            const giveaway = await client.db.giveaways.get(giveawayId);
-            if (!giveaway || giveaway.ended) return;
-
-            await endGiveawayOnStartup(client, giveawayId, giveaway);
-        } catch (error) {
-            console.error(`[Giveaway] Error in scheduled end for ${giveawayId}:`, error);
+            await client.db.giveaways.set(giveawayId, { ...giveaway, ended: true, error: error.message });
+        } catch (e) {
+            // Ignore
         }
-    }, delay);
+    }
 }
 
 function getPrizeInfo(prize) {

@@ -4,6 +4,7 @@
  */
 
 import crypto from 'crypto';
+import { PermissionFlagsBits } from 'discord.js';
 
 export default {
     name: 'warn',
@@ -13,19 +14,18 @@ export default {
     cooldown: 3,
 
     async execute(client, message, args) {
-        // Check if user has permission (mod role or owner)
+        // Check if user has permission using Discord permissions (more secure)
         const isOwner = client.owners.includes(message.author.id);
-        const hasModeRole = message.member?.roles.cache.some(r => 
-            r.name.toLowerCase().includes('mod') || 
-            r.name.toLowerCase().includes('staff') ||
-            r.name.toLowerCase().includes('admin')
-        );
+        const hasModPermission = message.member?.permissions.has(PermissionFlagsBits.ModerateMembers) ||
+            message.member?.permissions.has(PermissionFlagsBits.KickMembers) ||
+            message.member?.permissions.has(PermissionFlagsBits.BanMembers) ||
+            message.member?.permissions.has(PermissionFlagsBits.Administrator);
 
-        if (!isOwner && !hasModeRole) {
+        if (!isOwner && !hasModPermission) {
             return message.reply({
                 embeds: [
                     client.embed(client.colors.error)
-                        .setDescription(`${client.emoji.cross} You don't have permission to use this! 🔒`)
+                        .setDescription(`${client.emoji.cross} You need moderation permissions to use this! 🔒`)
                 ]
             });
         }

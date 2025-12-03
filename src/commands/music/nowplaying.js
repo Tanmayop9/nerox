@@ -11,11 +11,11 @@ export default class NowPlaying extends Command {
             const player = client.getPlayer(ctx);
             const track = player.queue.current;
             const position = player.position;
-            const duration = track.length;
+            const duration = track.length || 0;
             
-            // Create progress bar
-            const progress = Math.round((position / duration) * 20);
-            const progressBar = '▰'.repeat(progress) + '▱'.repeat(20 - progress);
+            // Create progress bar (handle live streams with 0 duration)
+            const progress = duration > 0 ? Math.round((position / duration) * 20) : 0;
+            const progressBar = track.isStream ? '🔴 LIVE STREAM' : ('▰'.repeat(progress) + '▱'.repeat(20 - progress));
 
             await ctx.reply({
                 embeds: [
@@ -32,7 +32,7 @@ export default class NowPlaying extends Command {
                             `${progressBar}\n` +
                             `\`${client.formatDuration(position)}\` / \`${track.isStream ? '🔴 LIVE' : client.formatDuration(duration)}\`\n\n` +
                             `${track.isStream ? '🔴 This is a live stream - enjoy the endless vibes!' : 
-                                `🎧 ${Math.round((duration - position) / 1000 / 60)} minutes of music left to enjoy!`}`
+                                duration > 0 ? `🎧 ${Math.round((duration - position) / 1000 / 60)} minutes of music left to enjoy!` : '🎧 Enjoying the music!'}`
                         )
                         .footer({
                             text: `💖 Requested by ${track.requester.displayName}`,

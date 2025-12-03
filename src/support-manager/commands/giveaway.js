@@ -584,8 +584,18 @@ function getPrizeInfo(prize) {
     return prizes[prize] || { emoji: '🎁', name: prize };
 }
 
+// Schedule giveaway end - uses setTimeout for short durations, 
+// but relies on periodic checks in ready.js for long durations
 function scheduleGiveawayEnd(client, giveawayId, delay) {
-    setTimeout(async () => {
+    // For durations over 1 hour, rely on the periodic check system
+    // The ready event checks every minute for expired giveaways
+    if (delay > 3600000) {
+        console.log(`[Giveaway] ${giveawayId} scheduled for ${Math.round(delay / 60000)} minutes via periodic check`);
+        return;
+    }
+    
+    // For short durations, use setTimeout for immediate response
+    const timeoutId = setTimeout(async () => {
         try {
             const giveaway = await client.db.giveaways.get(giveawayId);
             if (giveaway && !giveaway.ended) {
@@ -595,6 +605,10 @@ function scheduleGiveawayEnd(client, giveawayId, delay) {
             console.error(`[Giveaway] Error in scheduled end for ${giveawayId}:`, error);
         }
     }, delay);
+    
+    // Store timeout reference for cleanup if needed
+    if (!client.giveawayTimeouts) client.giveawayTimeouts = new Map();
+    client.giveawayTimeouts.set(giveawayId, timeoutId);
 }
 
 // Export for use in ready event
