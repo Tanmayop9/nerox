@@ -7,7 +7,7 @@ import { filter } from '../../utils/filter.js';
 export default class BotInfo extends Command {
 	constructor() {
 		super(...arguments);
-		this.description = 'Peek behind the scenes of the bot’s core.';
+		this.description = 'Peek behind the scenes of the bot\'s core.';
 	}
 
 	async execute(client, ctx) {
@@ -22,41 +22,55 @@ export default class BotInfo extends Command {
 		const totalGuilds = client.guilds.cache.size;
 		const totalChannels = client.channels.cache.size;
 		const commandsCount = client.commands.size;
+		const activePlayers = client.manager?.players?.size || 0;
+		const shardCount = client.options.shardCount || 1;
 
-		const embed = client.embed()
-			.title(`${client.emoji.info} Bot Overview`)
+		const embed = client.embed('#FF69B4')
+			.setAuthor({
+				name: `✨ ${client.user.username} Info`,
+				iconURL: client.user.displayAvatarURL()
+			})
+			.setThumbnail(client.user.displayAvatarURL())
 			.desc(
-				`${client.emoji.info} \`Uptime:\` ${uptime}\n` +
-				`${client.emoji.info} \`Ping:\` ${ping}ms\n` +
-				`${client.emoji.info} \`Servers:\` ${totalGuilds}\n` +
-				`${client.emoji.info} \`Users:\` ${totalUsers}\n`
+				`Hey there! I'm **${client.user.username}**, your friendly music companion! 🎵\n\n` +
+				`Currently, I'm vibing in **${totalGuilds.toLocaleString()} servers** with ` +
+				`**${totalUsers.toLocaleString()} amazing users**! I've been running smoothly on ` +
+				`**${shardCount} shard${shardCount > 1 ? 's' : ''}** and right now I have ` +
+				`**${activePlayers} active player${activePlayers !== 1 ? 's' : ''}** jamming to music! 🎧\n\n` +
+				`My heart has been beating for **${uptime}** and I'm feeling great with a ` +
+				`latency of just **${ping}ms**! ${ping < 100 ? '💚' : ping < 200 ? '💛' : '❤️'}`
 			)
-			.footer({ text: 'NeroX Engine Operational' });
+			.footer({ text: '💖 Made with love by NeroX Studios', iconURL: ctx.author.displayAvatarURL() })
+			.setTimestamp();
 
 		const menu = new StringSelectMenuBuilder()
 			.setCustomId('botinfo')
-			.setPlaceholder('Pick a section to explore bot stats')
+			.setPlaceholder('🌸 Pick a section to explore!')
 			.setMaxValues(1)
 			.addOptions([
 				{
 					label: 'Overview',
 					value: 'overview',
-					emoji: client.emoji.info,
+					description: 'See the big picture!',
+					emoji: '🏠',
 				},
 				{
 					label: 'System',
 					value: 'system',
-					emoji: client.emoji.info,
+					description: 'Technical stuff!',
+					emoji: '⚙️',
 				},
 				{
 					label: 'Developer',
 					value: 'developer',
-					emoji: client.emoji.info,
+					description: 'Meet the creators!',
+					emoji: '👨‍💻',
 				},
 				{
 					label: 'Stats',
 					value: 'stats',
-					emoji: client.emoji.info,
+					description: 'Numbers & metrics!',
+					emoji: '📊',
 				},
 			]);
 
@@ -77,45 +91,76 @@ export default class BotInfo extends Command {
 			let updatedEmbed;
 
 			if (choice === 'overview') {
-				updatedEmbed = client.embed()
-					.title(`${client.emoji.info} Bot Overview`)
+				updatedEmbed = client.embed('#FF69B4')
+					.setAuthor({
+						name: `🏠 ${client.user.username} Overview`,
+						iconURL: client.user.displayAvatarURL()
+					})
+					.setThumbnail(client.user.displayAvatarURL())
 					.desc(
-						`${client.emoji.info} \`Prefix:\` ${client.prefix}\n` +
-						`${client.emoji.info} \`Uptime:\` ${uptime}\n` +
-						`${client.emoji.info} \`Ping:\` ${ping}ms\n` +
-						`${client.emoji.info} \`Servers:\` ${totalGuilds}\n` +
-						`${client.emoji.info} \`Channels:\` ${totalChannels}\n` +
-						`${client.emoji.info} \`Users:\` ${totalUsers}\n`
-					);
+						`Hey there! I'm **${client.user.username}**, your friendly music companion! 🎵\n\n` +
+						`Currently, I'm vibing in **${totalGuilds.toLocaleString()} servers** with ` +
+						`**${totalUsers.toLocaleString()} amazing users**! I've been running smoothly on ` +
+						`**${shardCount} shard${shardCount > 1 ? 's' : ''}** and right now I have ` +
+						`**${activePlayers} active player${activePlayers !== 1 ? 's' : ''}** jamming to music! 🎧\n\n` +
+						`My heart has been beating for **${uptime}** and I'm feeling great with a ` +
+						`latency of just **${ping}ms**! ${ping < 100 ? '💚' : ping < 200 ? '💛' : '❤️'}\n\n` +
+						`You can use my prefix \`${client.prefix}\` to command me, and I have ` +
+						`**${totalChannels.toLocaleString()} channels** in my cache ready to serve! 💫`
+					)
+					.footer({ text: '💖 Made with love by NeroX Studios' })
+					.setTimestamp();
 			} else if (choice === 'system') {
-				updatedEmbed = client.embed()
-					.title(`${client.emoji.info} System Blueprint`)
+				updatedEmbed = client.embed('#FF69B4')
+					.setAuthor({
+						name: `⚙️ System Blueprint`,
+						iconURL: client.user.displayAvatarURL()
+					})
+					.setThumbnail(client.user.displayAvatarURL())
 					.desc(
-						`${client.emoji.info} \`CPU:\` ${cpuModel}\n` +
-						`${client.emoji.info} \`Memory Usage:\` ${memoryUsage} MB\n` +
-						`${client.emoji.info} \`Platform:\` ${platform}\n` +
-						`${client.emoji.info} \`Architecture:\` ${architecture}\n` +
-						`${client.emoji.info} \`Node.js:\` ${nodeVersion}\n`
-					);
+						`Here's a peek under my hood! 🔧\n\n` +
+						`I'm powered by a **${cpuModel}** processor and currently using ` +
+						`**${memoryUsage} MB** of memory to keep all your favorite tunes running! 💾\n\n` +
+						`I'm running on **${platform}** with **${architecture}** architecture, ` +
+						`powered by **Node.js ${nodeVersion}**. Everything is optimized to ` +
+						`give you the smoothest music experience possible! ✨`
+					)
+					.footer({ text: '🔧 System specs for the tech-curious!' })
+					.setTimestamp();
 			} else if (choice === 'developer') {
-				updatedEmbed = client.embed()
-					.title(`${client.emoji.info} Crafted With Code`)
+				updatedEmbed = client.embed('#FF69B4')
+					.setAuthor({
+						name: `👨‍💻 Crafted With Love`,
+						iconURL: client.user.displayAvatarURL()
+					})
+					.setThumbnail(client.user.displayAvatarURL())
 					.desc(
-						`${client.emoji.info} \`Built By:\` NeroX Studios\n` +
-						`${client.emoji.info} \`Version:\` v1.0.0\n` +
-						`${client.emoji.info} \`Framework:\` Discord.js v14\n` +
-						`${client.emoji.info} \`Database:\` MongoDB\n` +
-						`${client.emoji.info} \`Support:\` [put your soft finger here](https://discord.gg/duM4dkbz9N)`
-					);
+						`I was lovingly crafted by the amazing team at **NeroX Studios**! 💕\n\n` +
+						`I'm currently at **version 1.0.0**, built using the powerful **Discord.js v14** ` +
+						`framework with a reliable **MongoDB** database keeping all your preferences safe! 🗃️\n\n` +
+						`Need help or want to hang out? Join our cozy ` +
+						`**[Support Server](https://discord.gg/duM4dkbz9N)** where our friendly ` +
+						`team is always ready to help! We'd love to have you there~ 🌸`
+					)
+					.footer({ text: '💝 Thank you for using me!' })
+					.setTimestamp();
 			} else if (choice === 'stats') {
-				updatedEmbed = client.embed()
-					.title(`${client.emoji.info} Performance Metrics`)
+				updatedEmbed = client.embed('#FF69B4')
+					.setAuthor({
+						name: `📊 Performance Metrics`,
+						iconURL: client.user.displayAvatarURL()
+					})
+					.setThumbnail(client.user.displayAvatarURL())
 					.desc(
-						`${client.emoji.info} \`Commands Loaded:\` ${commandsCount}\n` +
-						`${client.emoji.info} \`Shard:\` 0/${client.options.shardCount || '1'}\n` +
-						`${client.emoji.info} \`Latency:\` ${ping}ms\n` +
-						`${client.emoji.info} \`Cache Size:\` ${client.users.cache.size} users\n`
-					);
+						`Let's talk numbers! 📈\n\n` +
+						`I have **${commandsCount} commands** loaded and ready to serve you! ` +
+						`Currently operating on **Shard 0/${shardCount}** with a sweet latency of ` +
+						`**${ping}ms**! ${ping < 100 ? '(That\'s super fast! 🚀)' : ping < 200 ? '(Pretty good! ⚡)' : '(Working hard! 💪)'}\n\n` +
+						`My cache is holding **${client.users.cache.size} users** and I'm actively ` +
+						`playing music in **${activePlayers} server${activePlayers !== 1 ? 's' : ''}** right now! 🎶`
+					)
+					.footer({ text: '📊 Stats updated in real-time!' })
+					.setTimestamp();
 			}
 
 			await msg.edit({ embeds: [updatedEmbed] });
