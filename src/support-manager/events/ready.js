@@ -3,8 +3,13 @@
  * Handles bot startup, giveaway management, and Lavalink stats
  */
 
-// Lavalink stats channel ID
-const LAVALINK_STATS_CHANNEL = '292929';
+import axios from 'axios';
+
+// Lavalink configuration from environment
+const LAVALINK_HOST = process.env.LAVALINK_HOST || '98.83.6.213';
+const LAVALINK_PORT = process.env.LAVALINK_PORT || '25570';
+const LAVALINK_PASSWORD = process.env.LAVALINK_PASSWORD || 'Atom1';
+const LAVALINK_STATS_CHANNEL = process.env.LAVALINK_STATS_CHANNEL || '292929';
 
 export default {
     name: 'ready',
@@ -38,8 +43,8 @@ export default {
         setInterval(() => checkActiveGiveaways(client), 30000);
         console.log('[Giveaway] Periodic check system started (30s interval)');
 
-        // Send initial Lavalink stats
-        await sendLavalinkStats(client);
+        // Send initial Lavalink stats (wait 5 seconds for Lavalink to be ready)
+        setTimeout(() => sendLavalinkStats(client), 5000);
 
         // Update Lavalink stats every 1 hour (3600000 ms)
         setInterval(() => sendLavalinkStats(client), 3600000);
@@ -132,8 +137,11 @@ async function sendLavalinkStats(client) {
             }
         }
 
+        // Fetch real Lavalink stats from REST API
+        const lavalinkStats = await fetchLavalinkStats();
+        
         // Create Lavalink stats embed
-        const statsEmbed = await createLavalinkEmbed(client);
+        const statsEmbed = createLavalinkEmbed(client, lavalinkStats);
 
         // Check if we already have a stats message to edit
         const existingStats = messages?.find(msg => {
@@ -156,29 +164,93 @@ async function sendLavalinkStats(client) {
     }
 }
 
-// Create Lavalink stats embed
-async function createLavalinkEmbed(client) {
-    const uptime = formatUptime(client.uptime);
-    const memUsage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
+// Fetch Lavalink stats from REST API
+async function fetchLavalinkStats() {
+    try {
+        const response = await axios.get(`http://${LAVALINK_HOST}:${LAVALINK_PORT}/v4/stats`, {
+            headers: {
+                'Authorization': LAVALINK_PASSWORD
+            },
+            timeout: 5000
+        });
+        return response.data;
+    } catch (error) {
+        console.error('[Lavalink] Failed to fetch stats:', error.message);
+        return null;
+    }
+}
 
-    // Note: Since support manager doesn't have direct access to Lavalink,
-    // we'll show bot stats. For actual Lavalink stats, the main bot would need to share them.
+// Format bytes to human readable
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Format milliseconds to readable uptime
+function formatMs(ms) {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
+    if (hours > 0) return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+    if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+    return `${seconds}s`;
+}
+
+// Create Lavalink stats embed with real data
+function createLavalinkEmbed(client, stats) {
+    if (!stats) {
+        // Fallback if Lavalink is offline
+        return client.embed('#FF6B6B')
+            .setAuthor({
+                name: 'Lavalink Stats',
+                iconURL: client.user.displayAvatarURL()
+            })
+            .setDescription(
+                `**Node:** ${LAVALINK_HOST}:${LAVALINK_PORT}\n` +
+                `**Status:** Offline / Unreachable\n\n` +
+                `Unable to fetch Lavalink statistics.\n` +
+                `The node may be down or restarting.\n\n` +
+                `*Last checked: <t:${Math.floor(Date.now() / 1000)}:R>*`
+            )
+            .setFooter({ text: 'Auto-updates every hour' })
+            .setTimestamp();
+    }
+
+    const { players, playingPlayers, uptime, memory, cpu, frameStats } = stats;
+
     return client.embed(client.colors.primary)
         .setAuthor({
             name: 'Lavalink Stats',
             iconURL: client.user.displayAvatarURL()
         })
         .setDescription(
-            `**Node Status**\n` +
+            `**Node Info**\n` +
+            `Host: \`${LAVALINK_HOST}:${LAVALINK_PORT}\`\n` +
             `Status: Online\n` +
-            `Uptime: ${uptime}\n\n` +
-            `**System**\n` +
-            `Memory: ${memUsage} MB\n` +
-            `Latency: ${client.ws.ping}ms\n\n` +
-            `**Bot Stats**\n` +
-            `Guilds: ${client.guilds.cache.size}\n` +
-            `Commands: ${client.commands.size}\n\n` +
-            `*Last updated: <t:${Math.floor(Date.now() / 1000)}:R>*`
+            `Uptime: ${formatMs(uptime)}\n\n` +
+            `**Players**\n` +
+            `Total: ${players}\n` +
+            `Playing: ${playingPlayers}\n\n` +
+            `**Memory**\n` +
+            `Used: ${formatBytes(memory.used)}\n` +
+            `Free: ${formatBytes(memory.free)}\n` +
+            `Allocated: ${formatBytes(memory.allocated)}\n` +
+            `Reservable: ${formatBytes(memory.reservable)}\n\n` +
+            `**CPU**\n` +
+            `Cores: ${cpu.cores}\n` +
+            `System Load: ${(cpu.systemLoad * 100).toFixed(2)}%\n` +
+            `Lavalink Load: ${(cpu.lavalinkLoad * 100).toFixed(2)}%\n` +
+            (frameStats ? `\n**Frame Stats**\n` +
+            `Sent: ${frameStats.sent}\n` +
+            `Nulled: ${frameStats.nulled}\n` +
+            `Deficit: ${frameStats.deficit}\n` : '') +
+            `\n*Last updated: <t:${Math.floor(Date.now() / 1000)}:R>*`
         )
         .setFooter({ text: 'Auto-updates every hour' })
         .setTimestamp();
@@ -294,16 +366,4 @@ function getPrizeInfo(prize) {
         premium: { emoji: '', name: 'Premium (30 days)' },
     };
     return prizes[prize] || { emoji: '', name: prize };
-}
-
-function formatUptime(ms) {
-    const seconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) return `${days}d ${hours % 24}h ${minutes % 60}m`;
-    if (hours > 0) return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
-    if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
-    return `${seconds}s`;
 }

@@ -5,6 +5,14 @@ import { Connectors } from 'shoukaku';
 import spotify from 'kazagumo-spotify';
 import { Kazagumo, Plugins } from 'kazagumo';
 import { autoplay } from '../functions/autoplay.js';
+
+// Lavalink configuration from environment
+const LAVALINK_HOST = process.env.LAVALINK_HOST || '98.83.6.213';
+const LAVALINK_PORT = process.env.LAVALINK_PORT || '25570';
+const LAVALINK_PASSWORD = process.env.LAVALINK_PASSWORD || 'Atom1';
+const LAVALINK_SECURE = process.env.LAVALINK_SECURE === 'true';
+const LAVALINK_NAME = process.env.LAVALINK_NAME || 'nerox-lava';
+
 export class Manager {
     static { this.init = (client) => {
         const manager = new Kazagumo({
@@ -29,10 +37,10 @@ export class Manager {
             send: (guildId, payload) => client.guilds.cache.get(guildId)?.shard.send(payload),
         }, new Connectors.DiscordJS(client), [
             {
-                secure: false,
-                auth: 'Atom1',
-                url: '98.83.6.213:25570',
-                name: 'nerox-lava',
+                secure: LAVALINK_SECURE,
+                auth: LAVALINK_PASSWORD,
+                url: `${LAVALINK_HOST}:${LAVALINK_PORT}`,
+                name: LAVALINK_NAME,
             },
         ], {
             userAgent: `@painfuego/fuego/v1.0.0/21_N-2K021-ST`,

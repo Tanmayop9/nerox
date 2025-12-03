@@ -37,7 +37,7 @@ const checkPremiumExpiries = async (client) => {
             if (user) {
                 user.send({
                     embeds: [
-                        client.embed()
+                        client.embed('#FF6B6B')
                             .title('Premium Expired')
                             .desc(`Your **Nerox Premium** has expired.\n\nTo renew, click the button below or join our [Support Server](${SUPPORT_SERVER})`)
                             .footer({ text: 'Nerox Premium | Expired' })
